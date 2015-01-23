@@ -1,9 +1,12 @@
 function drawGame()
 	-- debug draw
+	love.graphics.setColor(255, 255, 255)
 	local shapes = currentMap.shapes
 	for i = 1, #shapes do
 		love.graphics.polygon("fill", unpack(shapes[i]))
 	end
+	
+	drawPlayers()
 end
 
 function drawPaused()
