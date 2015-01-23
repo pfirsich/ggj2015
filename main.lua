@@ -5,6 +5,8 @@ require "controller"
 require "math_vec"
 require "update"
 require "draw"
+require "map"
+HC = require "hardoncollider"
 
 function loadConfig(filename)
 	local Config = {}
@@ -43,6 +45,8 @@ function love.load()
 	lush.setDefaultVolume(Config.defaultVolume or 1.0)
 	lush.setPath("media/sounds/")
 	
+	pauseKeyInput = watchBinaryInput(keyboardCallback("escape"))
+	
 	globalState = {
 		["gameloop"] = {update = updateGame, draw = drawGame, onEnter = nil, onExit = nil, time = 0},
 		["paused"] = {update = updatePaused, draw = drawPaused, onEnter = nil, time = 0},
@@ -50,7 +54,14 @@ function love.load()
 	}
 	transitionState(globalState, "gameloop")
 	
-	pauseKeyInput = watchBinaryInput(keyboardCallback("escape"))
+	collider = HC(100, on_collision, collision_stop)
+	
+	shapeArray = {
+			{0,600,  1000,600,  1000,640,  0,640,   0,600},
+			{700,400,  1000,400,  1000,420,  700,420}
+	}
+	currentMap = setupMap(shapeArray)
+
 end
 
 function love.quit()

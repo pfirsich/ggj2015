@@ -1,5 +1,9 @@
 function drawGame()
-	
+	-- debug draw
+	local shapes = currentMap.shapes
+	for i = 1, #shapes do
+		love.graphics.polygon("fill", unpack(shapes[i]))
+	end
 end
 
 function drawPaused()
