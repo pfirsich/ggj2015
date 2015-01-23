@@ -8,6 +8,7 @@ require "draw"
 require "map"
 require "player"
 require "collision"
+require "utility"
 HC = require "hardoncollider"
 anim8 = require "anim8"
 
@@ -66,12 +67,11 @@ function love.load()
 	}
 	transitionState(globalState, "gameloop")
 	
-	collider = HC(100, collisionStart, nil)
+	camera = {position = {0,0}, scale = 1.0}
 	
-	shapeArray = {
-			{-40,600,  1000,600,  1000,640,  -40,640},
-			{700,400,  1000,400,  1000,420,  700,420}
-	}
+	collider = HC(100, collisionStart, nil)
+
+	local shapeArray = loveDoFile("media/mapgeometry_triangulated.lua")
 	currentMap = setupMap(shapeArray)
 	
 	playerW = 160

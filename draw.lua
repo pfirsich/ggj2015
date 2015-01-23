@@ -1,4 +1,11 @@
 function drawGame()
+	love.graphics.push()
+	love.graphics.translate(xRes/2, yRes/2)
+	local tx = -math.floor(camera.position[1] * camera.scale)
+	local ty = -math.floor(camera.position[2] * camera.scale)
+	love.graphics.translate(tx, ty)
+	love.graphics.scale(camera.scale, camera.scale)
+	
 	-- debug draw
 	love.graphics.setColor(255, 255, 255)
 	local shapes = currentMap.shapes
@@ -7,6 +14,8 @@ function drawGame()
 	end
 	
 	drawPlayers()
+	
+	love.graphics.pop()
 end
 
 function drawPaused()
