@@ -10,16 +10,20 @@ function updateGame()
 	camera.scale = camera.scale + (targetTransformScale - camera.scale) * 3.0 * simulationDt
 	
 	-- check for pause key
-	if false then
-		transitionState(globalState, "paused")
+	for playerId = 1, #players do
+		if players[playerId].controller.pause().pressed then
+			transitionState(globalState, "paused")
+		end
 	end
 	
 	updatePlayers()
 end
 
 function updatePaused()
-	if false then
-		transitionState(globalState, "gameloop")
+		for playerId = 1, #players do
+		if players[playerId].controller.pause().pressed then
+			transitionState(globalState, "gameloop")
+		end
 	end
 end
 
