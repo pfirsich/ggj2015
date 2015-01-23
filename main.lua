@@ -5,6 +5,11 @@ require "controller"
 require "math_vec"
 require "update"
 require "draw"
+require "map"
+require "player"
+require "collision"
+HC = require "hardoncollider"
+anim8 = require "anim8"
 
 function loadConfig(filename)
 	local Config = {}
@@ -39,6 +44,17 @@ end
 function love.load()
 	if arg[#arg] == "-debug" then require("mobdebug").start() end
 	
+	-- dirty, dirty, dirty to support my crappy old controller
+	local gpMap = function(...) love.joystick.setGamepadMapping("6d0418c2000000000000504944564944", ...) end
+	gpMap("start", "button", 10)
+	gpMap("triggerright", "button", 8)
+	gpMap("rightshoulder", "button", 6)
+	gpMap("leftshoulder", "button", 5)
+	gpMap("leftx", "axis", 1)
+	gpMap("lefty", "axis", 2)
+	gpMap("rightx", "axis", 3)
+	gpMap("righty", "axis", 4)
+	
 	Config = loadConfig("config.cfg")
 	lush.setDefaultVolume(Config.defaultVolume or 1.0)
 	lush.setPath("media/sounds/")
@@ -50,7 +66,24 @@ function love.load()
 	}
 	transitionState(globalState, "gameloop")
 	
-	pauseKeyInput = watchBinaryInput(keyboardCallback("escape"))
+	collider = HC(100, collisionStart, nil)
+	
+	shapeArray = {
+			{-40,600,  1000,600,  1000,640,  -40,640},
+			{700,400,  1000,400,  1000,420,  700,420}
+	}
+	currentMap = setupMap(shapeArray)
+	
+	playerW = 160
+	playerH = 204
+	playerAnimationStrip = love.graphics.newImage("media/images/character.png")
+	playerAnimationGrid = anim8.newGrid(playerW, playerH, playerAnimationStrip:getWidth(), playerAnimationStrip:getHeight())
+	playerWalkAnimation = anim8.newAnimation(playerAnimationGrid:getFrames('1-5', 1), 0.1)
+	playerStandAnimation = anim8.newAnimation(playerAnimationGrid:getFrames(3, 1), 0.1)
+		
+	for i, player in ipairs(Config.players) do
+		addPlayer(player.color, player.female, player.controller)
+	end
 end
 
 function love.quit()

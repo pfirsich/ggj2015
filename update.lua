@@ -1,12 +1,14 @@
 function updateGame()
 	-- check for pause key
-	if pauseKeyInput().pressed then
+	if false then
 		transitionState(globalState, "paused")
 	end
+	
+	updatePlayers()
 end
 
 function updatePaused()
-	if pauseKeyInput().pressed then
+	if false then
 		transitionState(globalState, "gameloop")
 	end
 end
