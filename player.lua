@@ -38,7 +38,7 @@ function addPlayer(color, hairColor, jacketColor, pantsColor, female, controller
 						female = female, controller = controller, position = {2000+200*#players,2500}, velocity = {0,0}, collisionShape = shape, 
 						animations = cloneAnimations(playerAnimation), hairAnimations = cloneAnimations(playerHairAnimation),
 						jacketAnimations = cloneAnimations(playerJacketAnimation), pantsAnimations = cloneAnimations(playerPantsAnimation),
-						direction = "r", lastDirection = "r", animState = "stand", downCollision = false, angularVelocity = 0.0, angle = 0.0})
+						direction = "r", lastDirection = "r", animState = "stand", downCollision = false, stunStart = -math.huge})
 end
 
 function updatePlayers()
@@ -51,9 +51,12 @@ function updatePlayers()
 	for i = 1, #players do
 		local player = players[i]
 		
+		-- move
 		local move = player.controller.move()
 		move = math.abs(move) > 0.2 and move * 1800.0 or 0.0
-		player.velocity[1] = player.velocity[1] + move * simulationDt
+		if getStateVar(globalState, "time") - player.stunStart > 1.5 then
+			player.velocity[1] = player.velocity[1] + move * simulationDt
+		end
 
 		-- gravity
 		if not player.downCollision or player.velocity[2] > 130.0 then
@@ -63,6 +66,20 @@ function updatePlayers()
 		-- jumping
 		if player.controller.jump().pressed and player.downCollision then
 			player.velocity[2] = -2400.0
+		end
+		
+		-- shoving
+		if player.controller.shove().pressed then
+			print("shove")
+			for i, other in ipairs(players) do
+				local rel = vsub(other.position, player.position)
+				local relLen = vnorm(rel)
+				local dirVec = player.direction == "l" and {-1, 0} or {1, 0}
+				if relLen < 200.0 and rel[1] * dirVec[1] / relLen > math.cos(35) then
+					other.stunStart = getStateVar(globalState, "time")
+					other.velocity = vadd(other.velocity, vmul(dirVec, 2000.0))
+				end
+			end
 		end
 		
 		-- friction and integration
@@ -116,10 +133,6 @@ function updatePlayers()
 		elseif player.velocity[2] < -fallThresh and not player.downCollision then
 			player.animState = "fall"
 		end
-		
-		-- salto
-		player.angularVelocity = player.controller.salto().isDown * (player.direction == "l" and 1.0 or -1.0) * simulationDt
-		player.angle = player.angle + player.angularVelocity * simulationDt
 	end
 end
 

@@ -67,7 +67,6 @@ function love.load()
 	-- dirty, dirty, dirty to support my crappy old controller
 	local gpMap = function(...) love.joystick.setGamepadMapping("6d0418c2000000000000504944564944", ...) end
 	gpMap("start", "button", 10)
-	gpMap("leftshoulder", "button", 5)
 	gpMap("a", "button", 2)
 	gpMap("x", "button", 1)
 	gpMap("b", "button", 3)
