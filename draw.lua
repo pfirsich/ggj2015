@@ -48,6 +48,25 @@ function drawGame()
 	drawPlayers()
 	
 	love.graphics.pop()
+	
+	-- HUD
+	drawTimer()
+end
+
+function drawTimer()
+	local time = getStateVar(globalState, "time")
+	local remaining = round(math.max(mapTime - time, 0), 0)
+
+	local w,h = love.graphics.getDimensions()
+	local margin = 10
+	local countdownWidth = 200
+	
+	local x = (w-countdownWidth-margin)
+	local y = margin
+	
+	love.graphics.setFont(hugeFont)
+	love.graphics.setColor(255, 255, 0, 255)
+	love.graphics.printf(tostring(remaining), x, y, countdownWidth, "right")
 end
 
 function drawPaused()
@@ -55,6 +74,7 @@ function drawPaused()
 	love.graphics.setColor({150, 150, 150, 0})
 	love.graphics.rectangle("fill", 0, 0, xRes, yRes)
 	love.graphics.setColor({255,255,255,255})
+	love.graphics.setFont(mediumFont)
 	love.graphics.printf("PAUSE", 0, yRes/2, xRes, "center")
 end
 
@@ -66,3 +86,4 @@ end
 function love.draw()
 	stateCall(globalState, "draw")
 end
+
