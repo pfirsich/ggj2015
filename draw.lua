@@ -1,10 +1,8 @@
 function applyCameraTransforms(position, scale, parallax)
 	parallax = parallax or 1.0
 	love.graphics.translate(xRes/2, yRes/2)
-	--love.graphics.scale(parallax)
-	local tx = -math.floor(position[1] * scale)
-	local ty = -math.floor(position[2] * scale)
-	love.graphics.translate(tx, ty)
+	love.graphics.scale(parallax, parallax)
+	love.graphics.translate(-position[1] * scale, -position[2] * scale)
 	love.graphics.scale(scale, scale)
 end
 
@@ -12,8 +10,24 @@ function drawGame()
 	love.graphics.setColor(255, 255, 255)
 	for layer = bgLayerCount, 1, -1 do
 		love.graphics.push()
+		local img = bgLayers[layer].image
 		applyCameraTransforms(camera.position, camera.scale, bgLayers[layer].parallax)
-		love.graphics.draw(bgLayers[layer].image, bgLayers[layer].cropData.left, bgLayers[layer].cropData.top, 0, 1.0, 1.0)
+		love.graphics.draw(img, bgLayers[layer].cropData.left, bgLayers[layer].cropData.top, 0, 1.0, 1.0)
+		
+		if layer == bgLayerCount then
+			-- HACK for presentation
+			love.graphics.setColor(108, 83, 36)
+			love.graphics.rectangle("fill", -10000, 4000, 100000, 100000)
+			love.graphics.setColor(255, 255, 255)
+		end
+		
+		love.graphics.translate(bgLayers[layer].cropData.originalWidth/2, bgLayers[layer].cropData.originalHeight/2)
+		love.graphics.scale(-1.0, 1.0)
+		love.graphics.translate(-bgLayers[layer].cropData.originalWidth/2, -bgLayers[layer].cropData.originalHeight/2)
+		
+		love.graphics.draw(img, bgLayers[layer].cropData.left - bgLayers[layer].cropData.originalWidth + 5, bgLayers[layer].cropData.top, 0, 1.0, 1.0)
+		love.graphics.draw(img, bgLayers[layer].cropData.left + bgLayers[layer].cropData.originalWidth - 5, bgLayers[layer].cropData.top, 0, 1.0, 1.0)
+		
 		love.graphics.pop()
 	end
 	
