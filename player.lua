@@ -53,6 +53,7 @@ function addPlayer(color, hairColor, jacketColor, pantsColor, female, controller
 			animState = "stand", 
 			downCollision = false, 
 			stunStart = -math.huge,
+			stunned = false
 		})
 end
 
@@ -65,12 +66,12 @@ function updatePlayers()
 	
 	for i = 1, #players do
 		local player = players[i]
-		local stunned = not getStateVar(globalState, "time") - player.stunStart > 1.5
+		player.stunned = not (getStateVar(globalState, "time") - player.stunStart > 0.7)
 		
 		-- move
 		local move = player.controller.move()
 		move = math.abs(move) > 0.2 and move * 1800.0 or 0.0
-		if not stunned then
+		if not player.stunned then
 			player.velocity[1] = player.velocity[1] + move * simulationDt
 		end
 
@@ -80,19 +81,21 @@ function updatePlayers()
 		end
 		
 		-- jumping
-		if player.controller.jump().pressed and player.downCollision and not stunned then
+		if player.controller.jump().pressed and player.downCollision and not player.stunned then
 			player.velocity[2] = -2400.0
+			lush.play("jump.wav", {tags={"ingame"}})
 		end
 		
 		-- shoving
-		if player.controller.shove().pressed and not stunned then
+		if player.controller.shove().pressed and not player.stunned then
 			for i, other in ipairs(players) do
 				local rel = vsub(other.position, player.position)
 				local relLen = vnorm(rel)
 				local dirVec = player.direction == "l" and {-1, 0} or {1, 0}
-				if relLen < 200.0 and rel[1] * dirVec[1] / relLen > math.cos(35) then
+				if relLen < 200.0 and rel[1] * dirVec[1] / relLen > math.cos(35) and not other.stunned then
 					other.stunStart = getStateVar(globalState, "time")
-					other.velocity = vadd(other.velocity, vmul(dirVec, 500.0))
+					other.velocity = vadd(other.velocity, vmul(dirVec, 850.0))
+					lush.play("hurt.wav", {tags={"ingame"}})
 				end
 			end
 		end
@@ -123,11 +126,12 @@ function updatePlayers()
 			player.velocity = vmul(orthoMTV, vdot(orthoMTV, player.velocity))
 		end
 		
-		updateAnimations(player.animations)
-		updateAnimations(player.hairAnimations)
-		updateAnimations(player.pantsAnimations)
-		updateAnimations(player.jacketAnimations)
-		-- updateAnimations(player.stunAnimations)
+		if not player.stunned then
+			updateAnimations(player.animations)
+			updateAnimations(player.hairAnimations)
+			updateAnimations(player.pantsAnimations)
+			updateAnimations(player.jacketAnimations)
+		end
 		
 		-- horizontal animation
 		local walkThresh = 30
@@ -150,9 +154,8 @@ function updatePlayers()
 			player.animState = "fall"
 		end
 		
-		-- stun animation
-		if stunned then
-			-- player.animState = "stunned"
+		if player.stunned then
+			player.animState = "fall"
 		end
 	end
 end
@@ -183,7 +186,7 @@ function drawPlayers()
 		
 		love.graphics.setColor(255, 255, 255)
 		player.lastDirection = player.direction
-		local yOffset = 10
+		local yOffset = player.stunned and 30 or 10
 		anim:draw(player.animations.image, player.position[1] - playerW/2, player.position[2] - playerH/2 + yOffset)
 		local hairOffset = player.direction == "r" and 53 or 24
 		love.graphics.setColor(unpack(player.hairColor))
