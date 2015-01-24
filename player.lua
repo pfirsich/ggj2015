@@ -19,29 +19,42 @@ function playerCollisonShape()
 	return collider:addPolygon(unpack(points))
 end
 
-function addPlayer(color, hairColor, female, controller)
+function cloneAnimations(animations)
+	ret = {}
+	for k, v in pairs(animations.frameSets) do
+		ret[k] = v:clone()
+	end
+	ret.image = animations.image
+	return ret
+end
+
+function addPlayer(color, hairColor, jacketColor, pantsColor, female, controller)
 	--local shape = collider:addRectangle(0, 0, playerW / 4.0, playerH * 0.8)
 	local shape = playerCollisonShape()
 	shape.g_type = "player"
-	table.insert(players, {color = color, hairColor = hairColor, female = female, controller = controller, 
-						position = {2000+100*#players,2500}, velocity = {0,0}, collisionShape = shape, 
-						animations = {	walk = playerWalkAnimation:clone(), stand = playerStandAnimation:clone(), 
-											jump = playerJumpAnimation:clone(), fall = playerFallAnimation:clone()}, 
-						hairAnimations = {walk = playerHairWalkAnim:clone(), stand = playerHairStandAnim:clone(),
-												jump = playerHairJumpAnim:clone(), fall = playerHairFallAnim:clone()},
+	table.insert(players, {color = color, hairColor = hairColor, jacketColor = jacketColor, pantsColor = pantsColor, 
+						female = female, controller = controller, position = {2000+100*#players,2500}, velocity = {0,0}, collisionShape = shape, 
+						animations = cloneAnimations(playerAnimation), hairAnimations = cloneAnimations(playerHairAnimation),
+						jacketAnimations = cloneAnimations(playerJacketAnimation), pantsAnimations = cloneAnimations(playerPantsAnimation),
 						direction = "r", lastDirection = "r", animState = "stand", downCollision = false})
 end
 
 function updatePlayers()
+	local updateAnimations = function(anims)
+		for name, animation in pairs(anims) do
+			if name ~= "image" then animation:update(simulationDt) end
+		end
+	end
+	
 	for i = 1, #players do
 		local player = players[i]
 		
 		local move = player.controller.move()
-		move = math.abs(move) > 0.2 and move * 600.0 or 0.0
+		move = math.abs(move) > 0.2 and move * 900.0 or 0.0
 		player.velocity[1] = player.velocity[1] + move * simulationDt
 
 		-- gravity
-		if not player.downCollision or player.velocity[2] > 50.0 then
+		if not player.downCollision or player.velocity[2] > 90.0 then
 			player.velocity[2] = player.velocity[2] + 1800.0 * simulationDt
 		end
 		
@@ -76,12 +89,10 @@ function updatePlayers()
 			player.velocity = vmul(orthoMTV, vdot(orthoMTV, player.velocity))
 		end
 		
-		for name, animation in pairs(player.animations) do
-			animation:update(simulationDt)
-		end
-		for name, animation in pairs(player.hairAnimations) do
-			animation:update(simulationDt)
-		end
+		updateAnimations(player.animations)
+		updateAnimations(player.hairAnimations)
+		updateAnimations(player.pantsAnimations)
+		updateAnimations(player.jacketAnimations)
 		
 		-- horizontal animation
 		local walkThresh = 30
@@ -107,27 +118,40 @@ function updatePlayers()
 end
 
 function drawPlayers()
+	local flipAnims = function(anims) 
+		for name, animation in pairs(anims) do
+			if name ~= "image" then animation:flipH() end
+		end
+	end
+	
 	for i = 1, #players do
 		local player = players[i]
 		
 		player.collisionShape:draw()
 		
 		if player.direction ~= player.lastDirection then
-			for name, animation in pairs(player.animations) do
-				animation:flipH()
-			end
-			for name, animation in pairs(player.hairAnimations) do
-				animation:flipH()
-			end
+			flipAnims(player.animations)
+			flipAnims(player.hairAnimations)
+			flipAnims(player.jacketAnimations)
+			flipAnims(player.pantsAnimations)
 		end
 		
 		local anim = player.animations[player.animState]
 		local hairAnim = player.hairAnimations[player.animState]
+		local pantsAnim = player.pantsAnimations[player.animState]
+		local jacketAnim = player.jacketAnimations[player.animState]
 		
 		player.lastDirection = player.direction
-		anim:draw(playerAnimationStrip, player.position[1] - playerW/2, player.position[2] - playerH/2 + 10)
-		local hairOffset = player.direction == "r" and 55 or 22
+		local yOffset = 10
+		anim:draw(player.animations.image, player.position[1] - playerW/2, player.position[2] - playerH/2 + yOffset)
+		local hairOffset = player.direction == "r" and 53 or 24
 		love.graphics.setColor(unpack(player.hairColor))
-		hairAnim:draw(playerHairStrip, player.position[1] - playerW/2 + hairOffset, player.position[2] - playerH/2 + 20)
+		hairAnim:draw(player.hairAnimations.image, player.position[1] - playerW/2 + hairOffset, player.position[2] - playerH/2 + 10 + yOffset)
+		
+		love.graphics.setColor(unpack(player.pantsColor))
+		pantsAnim:draw(player.pantsAnimations.image, player.position[1] - playerW/2, player.position[2] - playerH/2 + yOffset - 6)
+		
+		love.graphics.setColor(unpack(player.jacketColor))
+		jacketAnim:draw(player.jacketAnimations.image, player.position[1] - playerW/2, player.position[2] - playerH/2 + yOffset - 10)
 	end
 end
