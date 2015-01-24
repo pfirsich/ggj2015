@@ -57,6 +57,15 @@ function addPlayer(color, hairColor, jacketColor, pantsColor, female, controller
 		})
 end
 
+function removePlayer(player)
+	for i=1,#players do
+		if players[i] == player then
+			table.remove(players, i)
+			break
+		end
+	end
+end
+
 function updatePlayers()
 	local updateAnimations = function(anims)
 		for name, animation in pairs(anims) do

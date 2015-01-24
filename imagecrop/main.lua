@@ -1,6 +1,7 @@
 function love.load(arg)
 	love.filesystem.setIdentity("ImageCrop")
 	
+	autoCrop("Lvl11.png")
 	autoCrop("Lvl12.png")
 	autoCrop("Lvl13.png")
 	autoCrop("Lvl14.png")

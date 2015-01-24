@@ -26,9 +26,10 @@ function updateGame()
 		end
 	end
 	
+	updateCallbacks()
 	updatePlayers()
-	
 	updateRockets()
+	updateEscapes()
 end
 
 function updatePaused()
