@@ -55,13 +55,18 @@ end
 
 function drawTimer()
 	local time = getStateVar(globalState, "time")
-	local remaining = round(math.max(mapTime - time, 0), 0)
+	local remaining = round(mapTime - time, 0)
+	
+	if remaining <= 0 then -- HACK (PRESENTATION)
+		transitionState(globalState, "levelEnd")
+		lush.play("explosion.wav")
+		return 
+	end
 
-	local w,h = love.graphics.getDimensions()
 	local margin = 10
 	local countdownWidth = 200
 	
-	local x = (w-countdownWidth-margin)
+	local x = (xRes-countdownWidth-margin)
 	local y = margin
 	
 	love.graphics.setFont(hugeFont)
@@ -81,6 +86,11 @@ end
 function drawError()
 	love.graphics.setColor(255,255,255)
 	love.graphics.printf(getStateVar(globalState, "message"), 5, 5, 500)
+end
+
+function drawLevelEnd()
+	love.graphics.setColor(255,255,255,255)
+	love.graphics.rectangle("fill", 0, 0, xRes, yRes)
 end
 
 function love.draw()
