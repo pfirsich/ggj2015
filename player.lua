@@ -32,8 +32,10 @@ function addPlayer(color, hairColor, jacketColor, pantsColor, female, controller
 	--local shape = collider:addRectangle(0, 0, playerW / 4.0, playerH * 0.8)
 	local shape = playerCollisonShape()
 	shape.g_type = "player"
+	shape.g_mtvSum = {0,0}
+	shape.g_collisionCount = 0
 	table.insert(players, {color = color, hairColor = hairColor, jacketColor = jacketColor, pantsColor = pantsColor, 
-						female = female, controller = controller, position = {2000+100*#players,2500}, velocity = {0,0}, collisionShape = shape, 
+						female = female, controller = controller, position = {2000+200*#players,2500}, velocity = {0,0}, collisionShape = shape, 
 						animations = cloneAnimations(playerAnimation), hairAnimations = cloneAnimations(playerHairAnimation),
 						jacketAnimations = cloneAnimations(playerJacketAnimation), pantsAnimations = cloneAnimations(playerPantsAnimation),
 						direction = "r", lastDirection = "r", animState = "stand", downCollision = false})
@@ -127,7 +129,7 @@ function drawPlayers()
 	for i = 1, #players do
 		local player = players[i]
 		
-		player.collisionShape:draw()
+		--player.collisionShape:draw()
 		
 		if player.direction ~= player.lastDirection then
 			flipAnims(player.animations)
@@ -141,6 +143,7 @@ function drawPlayers()
 		local pantsAnim = player.pantsAnimations[player.animState]
 		local jacketAnim = player.jacketAnimations[player.animState]
 		
+		love.graphics.setColor(255, 255, 255)
 		player.lastDirection = player.direction
 		local yOffset = 10
 		anim:draw(player.animations.image, player.position[1] - playerW/2, player.position[2] - playerH/2 + yOffset)
