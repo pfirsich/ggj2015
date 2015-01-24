@@ -2,7 +2,21 @@
 * Coop - Escapes, which require an other player collaborating (for example an other player pressing the button for the elevator, sacrificing himself maybe)
 * Competitive - Ways to knock players down and stun them for a while
 * Mulitplayer on one keyboard? Only interact and move buttons necessary
-* Escapes only for a fixed number of players << total number of players
+* Escapes only for a fixed number of players << total number of players (
 * Rest of the group asks the theme question! after the escape
 * Different escapes for every playthrough (probabilistic)
 * New levels can only be accessed, when the player survived the previous level
+* 2D-Sidescroller
+* Nur volle Tiles
+
+
+-- First Level
+* Comet / Dinosaur invasion / Volcano / Tsunami / Tornado / Heat Wave / Wildfire / Train / Viren / Gifte / Fallout
+
+Train: Wagon abkoppeln, Ins Klo einschließen, 
+
+* Atomrakete statt Komet, weil Endzeitstimmung plausibler
+* "Flusenartiger scheiß"-Partikel
+
+* Rakete, Bunker, Teleporter, Raketenabwehrsystem (Laser), dass den Spieler tötet, Dragonballs, Aladdins Teppich, Rote Stiefel (Ich wünsche mir)
+(ruhig mehrere von allen)

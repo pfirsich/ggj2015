@@ -42,6 +42,23 @@ function loadConfig(filename)
 	return Config
 end
 
+function makeAnimations(filename, frameWidth, frames)
+	local anims = {}
+	anims.image = love.graphics.newImage(filename)
+	anims.frameWidth = frameWidth
+	anims.grid = anim8.newGrid(frameWidth, anims.image:getHeight(), anims.image:getWidth(), anims.image:getHeight())
+	anims.frameSets = {}
+	for name, frame in pairs(frames) do
+		local realFrames = {}
+		for i, f in ipairs(frame.frames) do
+			realFrames[#realFrames + 1] = f
+			realFrames[#realFrames + 1] = 1
+		end
+		anims.frameSets[name] = anim8.newAnimation(anims.grid:getFrames(unpack(realFrames)), frame.interval)
+	end
+	return anims
+end
+
 function love.load()
 	if arg[#arg] == "-debug" then require("mobdebug").start() end
 	
@@ -70,29 +87,42 @@ function love.load()
 	camera = {position = {0,0}, scale = 1.0}
 	
 	collider = HC(100, collisionStart, nil)
+	
+		-- backgrounds
+	love.graphics.setBackgroundColor(131, 156, 60)
+	level = 1
+	bgLayerCount = 5
+	bgLayers = {}
+	local parallaxes = {1.0, 0.9, 1.0, 0.4, 0.3, 1.0}
+	for i = 1, bgLayerCount do
+		filename = "media/images/Lvl" .. tostring(level) .. tostring(i) .. ".png.cropped"
+		bgLayers[i] = {image = love.graphics.newImage(filename .. ".png"), parallax = parallaxes[i], cropData = loveDoFile(filename .. ".lua")}
+	end
+	mapSize = {bgLayers[1].image:getWidth(), bgLayers[1].image:getHeight() * 5.0}
 
+	-- map
 	local shapeArray = loveDoFile("media/mapgeometry_triangulated.lua")
+	local wallThickness = 50
+	table.insert(shapeArray, {0,mapSize[2],  0,0,  -wallThickness,0,  -wallThickness,mapSize[2]})
+	table.insert(shapeArray, {mapSize[1],mapSize[2],  mapSize[1]+wallThickness,mapSize[2],  mapSize[1]+wallThickness,0,  mapSize[1],0})
 	currentMap = setupMap(shapeArray)
 	
 	-- animations
-	local hairAnimSpeed = 0.1
+	local hairAnimSpeed = 0.15
 	
-	playerAnimationStrip = love.graphics.newImage("media/images/character.png")
 	playerW = 160
-	playerH = playerAnimationStrip:getHeight()
-	playerAnimationGrid = anim8.newGrid(playerW, playerH, playerAnimationStrip:getWidth(), playerH)
-	playerWalkAnimation = anim8.newAnimation(playerAnimationGrid:getFrames('5-6', 1,   '8-10', 1), hairAnimSpeed)
-	playerStandAnimation = anim8.newAnimation(playerAnimationGrid:getFrames(7, 1), 1.0)
-	playerFallAnimation = anim8.newAnimation(playerAnimationGrid:getFrames(3, 1,   4, 1), 0.05)
-	playerJumpAnimation = anim8.newAnimation(playerAnimationGrid:getFrames(1, 1,   2, 1), 0.05)
+	playerH = 216
 	
-	playerHairStrip = love.graphics.newImage("media/images/hair.png")
-	local hairH = playerHairStrip:getHeight()
-	playerHairGrid = anim8.newGrid(83, hairH, playerHairStrip:getWidth(), hairH)
-	playerHairWalkAnim = anim8.newAnimation(playerHairGrid:getFrames('1-2', 1,   3, 1,   '2-1', 1), hairAnimSpeed)
-	playerHairStandAnim = anim8.newAnimation(playerHairGrid:getFrames(3, 1), 0.2)
-	playerHairFallAnim = anim8.newAnimation(playerHairGrid:getFrames('4-5', 1), 0.08)
-	playerHairJumpAnim = anim8.newAnimation(playerHairGrid:getFrames('6-7', 1), 0.15)
+	local jacketPantsFrames = {walk = {frames = {6, 5, 2, 3, 4}, interval = hairAnimSpeed}, stand = {frames = {1}, interval = 1.0}, 
+										fall = {frames = {7, 8}, interval = 0.05}, jump = {frames = {9,10}, interval = 0.05}}
+									
+	playerAnimation = makeAnimations("media/images/character.png", playerW, jacketPantsFrames)
+	playerJacketAnimation = makeAnimations("media/images/jackets.png", playerW, jacketPantsFrames)
+	playerPantsAnimation = makeAnimations("media/images/pants.png", playerW, jacketPantsFrames)
+	
+	playerHairAnimation = makeAnimations("media/images/hair.png", 83, {
+			walk = {frames = {'1-2',3,'2-1'}, interval = hairAnimSpeed}, stand = {frames = {3}, interval = 1.0},
+			fall = {frames = {'4-5'}, interval = 0.08}, jump = {frames = {'6-7'}, interval = 0.15}})
 	
 	-- blonde, black, brown, red
 	local hairColors = {{221, 223, 17}, {139, 49, 49}, {96, 96, 96}, {197, 32, 32}}
@@ -109,7 +139,10 @@ function love.load()
 			index = 3
 		end
 		
-		addPlayer(player.color, hairColors[index], player.female, player.controller)
+		local jacketColor = {love.math.random(255),love.math.random(255),love.math.random(255)}
+		local pantsColor = love.math.random() < 0.5 and {20,20,200} or {150,75,0}
+		
+		addPlayer(player.color, hairColors[index], jacketColor, pantsColor, player.female, player.controller)
 	end
 end
 

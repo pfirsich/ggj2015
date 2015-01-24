@@ -1,16 +1,30 @@
-function drawGame()
-	love.graphics.push()
+function applyCameraTransforms(position, scale, parallax)
+	parallax = parallax or 1.0
 	love.graphics.translate(xRes/2, yRes/2)
-	local tx = -math.floor(camera.position[1] * camera.scale)
-	local ty = -math.floor(camera.position[2] * camera.scale)
+	--love.graphics.scale(parallax)
+	local tx = -math.floor(position[1] * scale)
+	local ty = -math.floor(position[2] * scale)
 	love.graphics.translate(tx, ty)
-	love.graphics.scale(camera.scale, camera.scale)
+	love.graphics.scale(scale, scale)
+end
+
+function drawGame()
+	love.graphics.setColor(255, 255, 255)
+	for layer = bgLayerCount, 1, -1 do
+		love.graphics.push()
+		applyCameraTransforms(camera.position, camera.scale, bgLayers[layer].parallax)
+		love.graphics.draw(bgLayers[layer].image, bgLayers[layer].cropData.left, bgLayers[layer].cropData.top, 0, 1.0, 1.0)
+		love.graphics.pop()
+	end
+	
+	love.graphics.push()
+	applyCameraTransforms(camera.position, camera.scale)
 	
 	-- debug draw
 	love.graphics.setColor(255, 255, 255)
 	local shapes = currentMap.shapes
 	for i = 1, #shapes do
-		love.graphics.polygon("fill", unpack(shapes[i]))
+		--love.graphics.polygon("fill", unpack(shapes[i]))
 	end
 	
 	drawPlayers()
