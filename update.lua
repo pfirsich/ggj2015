@@ -6,7 +6,7 @@ function updateGame()
 		xMin, yMin = math.min(player.position[1], xMin), math.min(player.position[2], yMin)
 		xMax, yMax = math.max(player.position[1], xMax), math.max(player.position[2], yMax)
 	end
-	local defaultZoom = 0.4
+	local defaultZoom = 1.5
 	local xScale = xRes / (xMax - xMin + xRes * defaultZoom)
 	local yScale = yRes / (yMax - yMin + yRes * defaultZoom)
 	
@@ -26,7 +26,10 @@ function updateGame()
 		end
 	end
 	
+	updateCallbacks()
 	updatePlayers()
+	updateRockets()
+	updateEscapes()
 end
 
 function updatePaused()

@@ -7,8 +7,11 @@ require "update"
 require "draw"
 require "map"
 require "player"
+require "escape"
+require "callbacks"
 require "collision"
 require "utility"
+require "level1" -- HACK (PRESENTATION)
 HC = require "hardoncollider"
 anim8 = require "anim8"
 
@@ -64,6 +67,11 @@ function love.load()
 	
 	love.mouse.setVisible(false)
 	
+	smallFont = love.graphics.newFont("media/Anke.ttf", 24)
+	mediumFont = love.graphics.newFont("media/Anke.ttf", 48)
+	hugeFont = love.graphics.newFont("media/Anke.ttf", 72)
+	
+	
 	-- dirty, dirty, dirty to support my crappy old controller
 	local gpMap = function(...) love.joystick.setGamepadMapping("6d0418c2000000000000504944564944", ...) end
 	gpMap("start", "button", 10)
@@ -77,19 +85,12 @@ function love.load()
 	lush.setDefaultVolume(Config.defaultVolume or 1.0)
 	lush.setPath("media/sounds/")
 	
-	globalState = {
-		["gameloop"] = {update = updateGame, draw = drawGame, onEnter = nil, onExit = nil, time = 0},
-		["paused"] = {update = updatePaused, draw = drawPaused, onEnter = nil, time = 0},
-		["error"] = {update = nil, draw = drawError, onEnter = nil, time = 0},
-	}
-	transitionState(globalState, "gameloop")
-	
 	camera = {position = {0,0}, scale = 1.0}
 	
 	collider = HC(100, collisionStart, nil)
 	
 		-- backgrounds
-	love.graphics.setBackgroundColor(131, 156, 60)
+	love.graphics.setBackgroundColor(90, 100, 40)
 	level = 1
 	bgLayerCount = 5
 	bgLayers = {}
@@ -113,16 +114,18 @@ function love.load()
 	playerW = 160
 	playerH = 216
 	
-	local jacketPantsFrames = {walk = {frames = {6, 5, 2, 3, 4}, interval = walkAnimPeriod}, stand = {frames = {1}, interval = 1.0}, 
-										fall = {frames = {7, 8}, interval = 0.05}, jump = {frames = {9,10}, interval = 0.05}}
+	local playerFrames = {walk = {frames = {6, 5, 2, 3, 4}, interval = walkAnimPeriod}, stand = {frames = {1}, interval = 1.0}, 
+										fall = {frames = {7, 8}, interval = 0.05}, jump = {frames = {9,10}, interval = 0.05}, shove = {frames = {11}, interval = 1.0}, 
+										stun = {frames = {7}, interval = 1.0}}
 									
-	playerAnimation = makeAnimations("media/images/character.png", playerW, jacketPantsFrames)
-	playerJacketAnimation = makeAnimations("media/images/jackets.png", playerW, jacketPantsFrames)
-	playerPantsAnimation = makeAnimations("media/images/pants.png", playerW, jacketPantsFrames)
+	playerAnimation = makeAnimations("media/images/character.png", playerW, playerFrames)
+	playerJacketAnimation = makeAnimations("media/images/jackets.png", playerW, playerFrames)
+	playerPantsAnimation = makeAnimations("media/images/pants.png", playerW, playerFrames)
 	
 	playerHairAnimation = makeAnimations("media/images/hair.png", 83, {
 			walk = {frames = {'1-2',3,'2-1'}, interval = walkAnimPeriod}, stand = {frames = {3}, interval = 1.0},
-			fall = {frames = {'4-5'}, interval = 0.08}, jump = {frames = {'6-7'}, interval = 0.15}})
+			fall = {frames = {'4-5'}, interval = 0.08}, jump = {frames = {'6-7'}, interval = 0.15}, shove = {frames = {3}, interval = 1.0}, 
+			stun = {frames = {4}, interval = 1.0}})
 	
 	-- blonde, black, brown, red
 	local hairColors = {{221, 223, 17}, {139, 49, 49}, {96, 96, 96}, {197, 32, 32}}
@@ -147,6 +150,16 @@ function love.load()
 	
 	-- sounds
 	lush.play("theme3.xm", {tags={"background"}, looping = true})
+	
+	setupLevel() -- HACK (PRESENTATION)
+	
+	globalState = {
+		["gameloop"] = {update = updateGame, draw = drawGame, onEnter = nil, onExit = nil, time = 0},
+		["paused"] = {update = updatePaused, draw = drawPaused, onEnter = nil, time = 0},
+		["error"] = {update = nil, draw = drawError, onEnter = nil, time = 0},
+	}
+	transitionState(globalState, "gameloop")
+	
 end
 
 function love.quit()
