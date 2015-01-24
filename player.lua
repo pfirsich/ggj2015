@@ -1,7 +1,27 @@
 players = {}
 
+function playerCollisonShape()
+	points = {}
+	local segments = 5
+	local width = playerW * 0.3
+	local height = playerH * 0.85
+	local radius = width / 2
+	for i = 0, segments do
+		points[#points + 1] = math.cos(i/segments * math.pi) * radius
+		points[#points + 1] = math.sin(i/segments * math.pi) * radius
+	end
+	points[#points + 1] = -width / 2
+	points[#points + 1] = -height
+	
+	points[#points + 1] = width / 2
+	points[#points + 1] = -height
+	
+	return collider:addPolygon(unpack(points))
+end
+
 function addPlayer(color, female, controller)
-	local shape = collider:addRectangle(0, 0, playerW / 4.0, playerH * 0.8)
+	--local shape = collider:addRectangle(0, 0, playerW / 4.0, playerH * 0.8)
+	local shape = playerCollisonShape()
 	shape.g_type = "player"
 	table.insert(players, {color = color, female = female, controller = controller, 
 						position = {2000+100*#players,2500}, velocity = {0,0}, collisionShape = shape, 
@@ -96,7 +116,7 @@ function drawPlayers()
 			end
 		end
 		player.lastDirection = player.direction
-		anim:draw(playerAnimationStrip, player.position[1] - playerW/2, player.position[2] - playerH/2)
+		anim:draw(playerAnimationStrip, player.position[1] - playerW/2, player.position[2] - playerH/2 + 10)
 		love.graphics.pop()
 	end
 end
