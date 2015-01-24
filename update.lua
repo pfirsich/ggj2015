@@ -27,6 +27,8 @@ function updateGame()
 	end
 	
 	updatePlayers()
+	
+	updateRockets()
 end
 
 function updatePaused()

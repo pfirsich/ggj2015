@@ -7,7 +7,8 @@ function applyCameraTransforms(position, scale, parallax)
 end
 
 function drawGame()
-	love.graphics.setColor(255, 255, 255)
+	drawRockets()
+	
 	for layer = bgLayerCount, 1, -1 do
 		love.graphics.push()
 		local img = bgLayers[layer].image
@@ -15,7 +16,7 @@ function drawGame()
 		love.graphics.draw(img, bgLayers[layer].cropData.left, bgLayers[layer].cropData.top, 0, 1.0, 1.0)
 		
 		if layer == bgLayerCount then
-			-- HACK for presentation
+			-- HACK (PRESENTATION)
 			love.graphics.setColor(108, 83, 36)
 			love.graphics.rectangle("fill", -10000, 4000, 100000, 100000)
 			love.graphics.setColor(255, 255, 255)

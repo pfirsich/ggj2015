@@ -41,7 +41,7 @@ function addPlayer(color, hairColor, jacketColor, pantsColor, female, controller
 			pantsColor = pantsColor, 
 			female = female, 
 			controller = controller, 
-			position = {2000+200*#players,2500}, 
+			position = {2000+200*#players,500}, 
 			velocity = {0,0}, 
 			collisionShape = shape, 
 			animations = cloneAnimations(playerAnimation), 
