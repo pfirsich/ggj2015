@@ -1,9 +1,8 @@
 escapes = {}
 
-function addEscape(x, y, text, image, drawCallback, activateCallback) 
-	table.insert(escapes, {
+function addEscape(x, y, text, drawCallback, activateCallback) 
+	local escape = {
 		position = {x,y},
-		image = image,
 		width = 100,
 		height = 40,
 		text = text,
@@ -11,17 +10,23 @@ function addEscape(x, y, text, image, drawCallback, activateCallback)
 		activateCallback = activateCallback,
 		drawCallback = drawCallback, 
 		relativeMessagePosition = {0,0},
-		messageShowing = false
-	})
+		messageShowing = false,
+		activated = false
+	}
+	table.insert(escapes, escape)
+	return escape
 end
 
 function drawEscapes()
 	for i = 1, #escapes do
 		local escape = escapes[i]
-		love.graphics.setColor(0, 255, 0)
-		love.graphics.circle("line", escape.position[1], escape.position[2], escape.activateRadius)
+		--love.graphics.setColor(0, 255, 0)
+		--love.graphics.circle("line", escape.position[1], escape.position[2], escape.activateRadius)
 		
-		if escape.drawCallback ~= nil then escape.drawCallback(escape) end
+		love.graphics.setColor(255,255,255,255)
+		if escape.drawCallback ~= nil then 
+			escape.drawCallback(escape) 
+		end
 		
 		if escape.messageShowing then
 			local x = escape.position[1] + escape.relativeMessagePosition[1]
@@ -49,7 +54,10 @@ function updateEscapes()
 				if not escape.messageShowing then
 					escape.messageShowing = true
 				else
-					if escape.callback ~= nil then escape.callback(escape, player) end
+					if escape.activateCallback ~= nil then 
+						escape.activateCallback(escape, player) 
+					end
+					escape.activated = true
 				end
 			end
 		end
