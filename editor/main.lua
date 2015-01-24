@@ -1,7 +1,7 @@
 require "helpers"
 
 function love.load(arg)
-	local filename = "Level1.png" -- arg[2]
+	local filename = "Lvl11.png" -- arg[2]
 	
 	love.filesystem.setIdentity("PolygonEditor")
 	love.keyboard.setKeyRepeat(true)
