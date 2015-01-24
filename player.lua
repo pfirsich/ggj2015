@@ -34,11 +34,26 @@ function addPlayer(color, hairColor, jacketColor, pantsColor, female, controller
 	shape.g_type = "player"
 	shape.g_mtvSum = {0,0}
 	shape.g_collisionCount = 0
-	table.insert(players, {color = color, hairColor = hairColor, jacketColor = jacketColor, pantsColor = pantsColor, 
-						female = female, controller = controller, position = {2000+200*#players,2500}, velocity = {0,0}, collisionShape = shape, 
-						animations = cloneAnimations(playerAnimation), hairAnimations = cloneAnimations(playerHairAnimation),
-						jacketAnimations = cloneAnimations(playerJacketAnimation), pantsAnimations = cloneAnimations(playerPantsAnimation),
-						direction = "r", lastDirection = "r", animState = "stand", downCollision = false, stunStart = -math.huge})
+	table.insert(players, {
+			color = color, 
+			hairColor = hairColor, 
+			jacketColor = jacketColor, 
+			pantsColor = pantsColor, 
+			female = female, 
+			controller = controller, 
+			position = {2000+200*#players,2500}, 
+			velocity = {0,0}, 
+			collisionShape = shape, 
+			animations = cloneAnimations(playerAnimation), 
+			hairAnimations = cloneAnimations(playerHairAnimation),
+			jacketAnimations = cloneAnimations(playerJacketAnimation), 
+			pantsAnimations = cloneAnimations(playerPantsAnimation),
+			direction = "r", 
+			lastDirection = "r", 
+			animState = "stand", 
+			downCollision = false, 
+			stunStart = -math.huge,
+		})
 end
 
 function updatePlayers()
@@ -146,7 +161,7 @@ function drawPlayers()
 	for i = 1, #players do
 		local player = players[i]
 		
-		--player.collisionShape:draw()
+		-- player.collisionShape:draw()
 		
 		if player.direction ~= player.lastDirection then
 			flipAnims(player.animations)
