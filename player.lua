@@ -34,11 +34,26 @@ function addPlayer(color, hairColor, jacketColor, pantsColor, female, controller
 	shape.g_type = "player"
 	shape.g_mtvSum = {0,0}
 	shape.g_collisionCount = 0
-	table.insert(players, {color = color, hairColor = hairColor, jacketColor = jacketColor, pantsColor = pantsColor, 
-						female = female, controller = controller, position = {2000+200*#players,2500}, velocity = {0,0}, collisionShape = shape, 
-						animations = cloneAnimations(playerAnimation), hairAnimations = cloneAnimations(playerHairAnimation),
-						jacketAnimations = cloneAnimations(playerJacketAnimation), pantsAnimations = cloneAnimations(playerPantsAnimation),
-						direction = "r", lastDirection = "r", animState = "stand", downCollision = false, stunStart = -math.huge})
+	table.insert(players, {
+			color = color, 
+			hairColor = hairColor, 
+			jacketColor = jacketColor, 
+			pantsColor = pantsColor, 
+			female = female, 
+			controller = controller, 
+			position = {2000+200*#players,2500}, 
+			velocity = {0,0}, 
+			collisionShape = shape, 
+			animations = cloneAnimations(playerAnimation), 
+			hairAnimations = cloneAnimations(playerHairAnimation),
+			jacketAnimations = cloneAnimations(playerJacketAnimation), 
+			pantsAnimations = cloneAnimations(playerPantsAnimation),
+			direction = "r", 
+			lastDirection = "r", 
+			animState = "stand", 
+			downCollision = false, 
+			stunStart = -math.huge,
+		})
 end
 
 function updatePlayers()
@@ -50,11 +65,12 @@ function updatePlayers()
 	
 	for i = 1, #players do
 		local player = players[i]
+		local stunned = not getStateVar(globalState, "time") - player.stunStart > 1.5
 		
 		-- move
 		local move = player.controller.move()
 		move = math.abs(move) > 0.2 and move * 1800.0 or 0.0
-		if getStateVar(globalState, "time") - player.stunStart > 1.5 then
+		if not stunned then
 			player.velocity[1] = player.velocity[1] + move * simulationDt
 		end
 
@@ -64,20 +80,19 @@ function updatePlayers()
 		end
 		
 		-- jumping
-		if player.controller.jump().pressed and player.downCollision then
+		if player.controller.jump().pressed and player.downCollision and not stunned then
 			player.velocity[2] = -2400.0
 		end
 		
 		-- shoving
-		if player.controller.shove().pressed then
-			print("shove")
+		if player.controller.shove().pressed and not stunned then
 			for i, other in ipairs(players) do
 				local rel = vsub(other.position, player.position)
 				local relLen = vnorm(rel)
 				local dirVec = player.direction == "l" and {-1, 0} or {1, 0}
 				if relLen < 200.0 and rel[1] * dirVec[1] / relLen > math.cos(35) then
 					other.stunStart = getStateVar(globalState, "time")
-					other.velocity = vadd(other.velocity, vmul(dirVec, 2000.0))
+					other.velocity = vadd(other.velocity, vmul(dirVec, 500.0))
 				end
 			end
 		end
@@ -112,6 +127,7 @@ function updatePlayers()
 		updateAnimations(player.hairAnimations)
 		updateAnimations(player.pantsAnimations)
 		updateAnimations(player.jacketAnimations)
+		-- updateAnimations(player.stunAnimations)
 		
 		-- horizontal animation
 		local walkThresh = 30
@@ -133,6 +149,11 @@ function updatePlayers()
 		elseif player.velocity[2] < -fallThresh and not player.downCollision then
 			player.animState = "fall"
 		end
+		
+		-- stun animation
+		if stunned then
+			-- player.animState = "stunned"
+		end
 	end
 end
 
@@ -146,7 +167,7 @@ function drawPlayers()
 	for i = 1, #players do
 		local player = players[i]
 		
-		--player.collisionShape:draw()
+		-- player.collisionShape:draw()
 		
 		if player.direction ~= player.lastDirection then
 			flipAnims(player.animations)
