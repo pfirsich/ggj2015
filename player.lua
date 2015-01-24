@@ -3,7 +3,7 @@ players = {}
 function addPlayer(color, female, controller)
 	local shape = collider:addRectangle(0, 0, playerW, playerH)
 	shape.g_type = "player"
-	table.insert(players, {color = color, female = female, controller = controller, position = {0,0}, velocity = {0,0}, collisionShape = shape, animations = {walk = playerWalkAnimation:clone(), stand = playerStandAnimation:clone()}, direction = "r", lastDirection = "r", animState = "stand", downCollision = false})
+	table.insert(players, {color = color, female = female, controller = controller, position = {0,0}, velocity = {0,0}, collisionShape = shape, animations = {walk = playerWalkAnimation:clone(), stand = playerStandAnimation:clone(), jump = playerJumpAnimation:clone(), fall = playerFallAnimation:clone()}, direction = "r", lastDirection = "r", animState = "stand", downCollision = false})
 end
 
 function updatePlayers()
@@ -11,7 +11,7 @@ function updatePlayers()
 		local player = players[i]
 		local move = player.controller.move()
 		
-		move = math.abs(move) > 0.2 and move * 300.0 or 0.0
+		move = math.abs(move) > 0.2 and move * 600.0 or 0.0
 		player.velocity = vadd(player.velocity, {move * simulationDt, 50.0})
 		
 		print(player.controller.jump().pressed, player.downCollision)
@@ -50,16 +50,23 @@ function updatePlayers()
 		-- horizontal animation
 		local walkThresh = 30
 		if player.velocity[1] > walkThresh then
-			if player.animState ~= "right" then player.animState = "walk" end
+			player.animState = "walk"
 			player.direction = "r" 
 		elseif player.velocity[1] < -walkThresh then
-			if player.animState ~= "left" then player.animState = "walk" end
+			player.animState = "walk"
 			player.direction = "l" 
 		else
 			if player.animState ~= "stand" then player.animState = "stand" end
 		end
 		
 		-- vertical animation
+		local jumpThresh = 20
+		local fallThresh = 20
+		if player.velocity[2] > jumpThresh then
+			player.animState = "jump"
+		elseif player.velocity[2] < -fallThresh then
+			player.animState = "fall"
+		end
 	end
 end
 

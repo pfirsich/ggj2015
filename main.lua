@@ -78,8 +78,10 @@ function love.load()
 	playerH = 204
 	playerAnimationStrip = love.graphics.newImage("media/images/character.png")
 	playerAnimationGrid = anim8.newGrid(playerW, playerH, playerAnimationStrip:getWidth(), playerAnimationStrip:getHeight())
-	playerWalkAnimation = anim8.newAnimation(playerAnimationGrid:getFrames('1-5', 1), 0.1)
-	playerStandAnimation = anim8.newAnimation(playerAnimationGrid:getFrames(3, 1), 0.1)
+	playerWalkAnimation = anim8.newAnimation(playerAnimationGrid:getFrames('5-6', 1,   '8-10', 1), 0.1)
+	playerStandAnimation = anim8.newAnimation(playerAnimationGrid:getFrames(7, 1), 1.0)
+	playerFallAnimation = anim8.newAnimation(playerAnimationGrid:getFrames(3, 1,   4, 1), 0.05)
+	playerJumpAnimation = anim8.newAnimation(playerAnimationGrid:getFrames(1, 1,   2, 1), 0.05)
 		
 	for i, player in ipairs(Config.players) do
 		addPlayer(player.color, player.female, player.controller)
