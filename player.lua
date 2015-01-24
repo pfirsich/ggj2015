@@ -1,12 +1,34 @@
 players = {}
 
-function addPlayer(color, female, controller)
-	local shape = collider:addRectangle(0, 0, playerW / 4.0, playerH * 0.8)
+function playerCollisonShape()
+	points = {}
+	local segments = 5
+	local width = playerW * 0.3
+	local height = playerH * 0.85
+	local radius = width / 2
+	for i = 0, segments do
+		points[#points + 1] = math.cos(i/segments * math.pi) * radius
+		points[#points + 1] = math.sin(i/segments * math.pi) * radius
+	end
+	points[#points + 1] = -width / 2
+	points[#points + 1] = -height
+	
+	points[#points + 1] = width / 2
+	points[#points + 1] = -height
+	
+	return collider:addPolygon(unpack(points))
+end
+
+function addPlayer(color, hairColor, female, controller)
+	--local shape = collider:addRectangle(0, 0, playerW / 4.0, playerH * 0.8)
+	local shape = playerCollisonShape()
 	shape.g_type = "player"
-	table.insert(players, {color = color, female = female, controller = controller, 
+	table.insert(players, {color = color, hairColor = hairColor, female = female, controller = controller, 
 						position = {2000+100*#players,2500}, velocity = {0,0}, collisionShape = shape, 
 						animations = {	walk = playerWalkAnimation:clone(), stand = playerStandAnimation:clone(), 
 											jump = playerJumpAnimation:clone(), fall = playerFallAnimation:clone()}, 
+						hairAnimations = {walk = playerHairWalkAnim:clone(), stand = playerHairStandAnim:clone(),
+												jump = playerHairJumpAnim:clone(), fall = playerHairFallAnim:clone()},
 						direction = "r", lastDirection = "r", animState = "stand", downCollision = false})
 end
 
@@ -19,7 +41,6 @@ function updatePlayers()
 		player.velocity[1] = player.velocity[1] + move * simulationDt
 
 		-- gravity
-		print(player.downCollision, player.velocity[2])
 		if not player.downCollision or player.velocity[2] > 50.0 then
 			player.velocity[2] = player.velocity[2] + 1800.0 * simulationDt
 		end
@@ -58,6 +79,9 @@ function updatePlayers()
 		for name, animation in pairs(player.animations) do
 			animation:update(simulationDt)
 		end
+		for name, animation in pairs(player.hairAnimations) do
+			animation:update(simulationDt)
+		end
 		
 		-- horizontal animation
 		local walkThresh = 30
@@ -88,15 +112,22 @@ function drawPlayers()
 		
 		player.collisionShape:draw()
 		
-		love.graphics.push()
-		local anim = player.animations[player.animState]
 		if player.direction ~= player.lastDirection then
 			for name, animation in pairs(player.animations) do
 				animation:flipH()
 			end
+			for name, animation in pairs(player.hairAnimations) do
+				animation:flipH()
+			end
 		end
+		
+		local anim = player.animations[player.animState]
+		local hairAnim = player.hairAnimations[player.animState]
+		
 		player.lastDirection = player.direction
-		anim:draw(playerAnimationStrip, player.position[1] - playerW/2, player.position[2] - playerH/2)
-		love.graphics.pop()
+		anim:draw(playerAnimationStrip, player.position[1] - playerW/2, player.position[2] - playerH/2 + 10)
+		local hairOffset = player.direction == "r" and 55 or 22
+		love.graphics.setColor(unpack(player.hairColor))
+		hairAnim:draw(playerHairStrip, player.position[1] - playerW/2 + hairOffset, player.position[2] - playerH/2 + 20)
 	end
 end
