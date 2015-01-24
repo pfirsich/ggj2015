@@ -41,7 +41,7 @@ function addPlayer(color, hairColor, jacketColor, pantsColor, female, controller
 			pantsColor = pantsColor, 
 			female = female, 
 			controller = controller, 
-			position = {2000+200*#players,500}, 
+			position = {1000+200*#players,100}, 
 			velocity = {0,0}, 
 			collisionShape = shape, 
 			animations = cloneAnimations(playerAnimation), 
@@ -78,7 +78,7 @@ function updatePlayers()
 		local player = players[i]
 		
 		local stunTime = 0.7
-		player.stunned = not (getStateVar(globalState, "time") - player.stunStart > stunTime)
+		player.stunned = false -- not (getStateVar(globalState, "time") - player.stunStart > stunTime)
 		
 		-- move
 		local move = player.controller.move()
@@ -88,7 +88,7 @@ function updatePlayers()
 		end
 
 		-- gravity
-		if not player.downCollision or player.velocity[2] > 130.0 then
+		if not player.downCollision or player.velocity[2] > 220.0 then
 			player.velocity[2] = player.velocity[2] + 3000.0 * simulationDt
 		end
 		
@@ -101,16 +101,18 @@ function updatePlayers()
 		-- shoving
 		if player.controller.shove().pressed and not player.stunned then
 			for i, other in ipairs(players) do
-				local rel = vsub(other.position, player.position)
-				local relLen = vnorm(rel)
-				local dirVec = player.direction == "l" and {-1, 0} or {1, 0}
-				if relLen < 200.0 and rel[1] * dirVec[1] / relLen > math.cos(35) and not other.stunned then
-					other.stunStart = getStateVar(globalState, "time")
-					other.velocity = vadd(other.velocity, vmul(dirVec, 850.0))
-					lush.play("hurt.wav", {tags={"ingame"}})
-					
-					other.animState = "stun"
-					other.nextAnimUpdate = getStateVar(globalState, "time") + stunTime
+				if other ~= player then
+					local rel = vsub(other.position, player.position)
+					local relLen = vnorm(rel)
+					local dirVec = player.direction == "l" and {-1, 0} or {1, 0}
+					if relLen < 80.0 and rel[1] * dirVec[1] / relLen > math.cos(35) and not other.stunned then
+						other.stunStart = getStateVar(globalState, "time")
+						other.velocity = vadd(other.velocity, vmul(dirVec, 1500.0))
+						lush.play("hurt.wav", {tags={"ingame"}})
+						
+						other.animState = "stun"
+						other.nextAnimUpdate = getStateVar(globalState, "time") + stunTime
+					end
 				end
 			end
 			player.animState = "shove"

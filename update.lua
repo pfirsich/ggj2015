@@ -14,10 +14,11 @@ function updateGame()
 	local targetTransformPos = {(xMin + xMax)/ 2.0, (yMin + yMax)/2.0}
 	local marginX, marginY = xRes/2.0/targetTransformScale, yRes/2.0/targetTransformScale
 	targetTransformPos[1] = clamp(targetTransformPos[1], marginX, mapSize[1] - marginX)
-	targetTransformPos[2] = clamp(targetTransformPos[2], marginY, 4000 - marginY)
+	targetTransformPos[2] = clamp(targetTransformPos[2], marginY, mapSize[2] - marginY)
 	local camPosRel = vsub(targetTransformPos, camera.position)
 	camera.position = vadd(camera.position, vmul(camPosRel, 3.0 * simulationDt))
 	camera.scale = camera.scale + (targetTransformScale - camera.scale) * 3.0 * simulationDt
+	-- camera.scale = math.max(camera.scale, 1.0)
 	
 	-- check for pause key
 	for playerId = 1, #players do
