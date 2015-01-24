@@ -38,7 +38,7 @@ function addPlayer(color, hairColor, jacketColor, pantsColor, female, controller
 						female = female, controller = controller, position = {2000+200*#players,2500}, velocity = {0,0}, collisionShape = shape, 
 						animations = cloneAnimations(playerAnimation), hairAnimations = cloneAnimations(playerHairAnimation),
 						jacketAnimations = cloneAnimations(playerJacketAnimation), pantsAnimations = cloneAnimations(playerPantsAnimation),
-						direction = "r", lastDirection = "r", animState = "stand", downCollision = false})
+						direction = "r", lastDirection = "r", animState = "stand", downCollision = false, angularVelocity = 0.0, angle = 0.0})
 end
 
 function updatePlayers()
@@ -116,6 +116,10 @@ function updatePlayers()
 		elseif player.velocity[2] < -fallThresh and not player.downCollision then
 			player.animState = "fall"
 		end
+		
+		-- salto
+		player.angularVelocity = player.controller.salto().isDown * (player.direction == "l" and 1.0 or -1.0) * simulationDt
+		player.angle = player.angle + player.angularVelocity * simulationDt
 	end
 end
 

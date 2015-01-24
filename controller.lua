@@ -1,14 +1,4 @@
 
-function dummyController()
-	return {
-		move = getFloatInputFromTwoBinaryInputs(dummyButtonCallback(false), dummyButtonCallback(false)),
-		jump = watchBinaryInput(dummyButtonCallback(false)),
-		interact = watchBinaryInput(dummyButtonCallback(false)),
-		shove = watchBinaryInput(dummyButtonCallback(false)),
-		pause = watchBinaryInput(dummyButtonCallback(false))
-	}
-end
-
 function keyboardController(left, right, jump, interact, shove)
 	return {
 		move = getFloatInputFromTwoBinaryInputs(keyboardCallback(right), keyboardCallback(left)),
@@ -16,6 +6,7 @@ function keyboardController(left, right, jump, interact, shove)
 		interact = watchBinaryInput(keyboardCallback(interact)),
 		shove = watchBinaryInput(keyboardCallback(shove)),
 		pause = watchBinaryInput(keyboardCallback("escape")),
+		salto = watchBinaryInput(keyboardCallback("rctrl")),
 		setFeedback = function(v) end,
 		getFeedback = function() return 0.0 end,
 	}
@@ -29,6 +20,7 @@ function joystickController(joystick)
 		interact = watchBinaryInput(joystickButtonCallback(joystick, "x")),
 		shove = watchBinaryInput(joystickButtonCallback(joystick, "b")),
 		pause = watchBinaryInput(joystickButtonCallback(joystick, "start")),
+		salto = watchBinaryInput(joystickButtonCallback(joystick, "leftshoulder")),
 		setFeedback = function(rumble) joystick:setVibration(rumble, rumble) end,
 		getFeedback = function() return joystick:getVibration() end
 	}
