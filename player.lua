@@ -65,7 +65,7 @@ function updatePlayers()
 	
 	for i = 1, #players do
 		local player = players[i]
-		local stunned = not getStateVar(globalState, "time") - player.stunStart > 1.5
+		local stunned = not (getStateVar(globalState, "time") - player.stunStart > 1.5)
 		
 		-- move
 		local move = player.controller.move()
