@@ -85,13 +85,6 @@ function love.load()
 	lush.setDefaultVolume(Config.defaultVolume or 1.0)
 	lush.setPath("media/sounds/")
 	
-	globalState = {
-		["gameloop"] = {update = updateGame, draw = drawGame, onEnter = nil, onExit = nil, time = 0},
-		["paused"] = {update = updatePaused, draw = drawPaused, onEnter = nil, time = 0},
-		["error"] = {update = nil, draw = drawError, onEnter = nil, time = 0},
-	}
-	transitionState(globalState, "gameloop")
-	
 	camera = {position = {0,0}, scale = 1.0}
 	
 	collider = HC(100, collisionStart, nil)
@@ -156,20 +149,15 @@ function love.load()
 	-- sounds
 	lush.play("theme3.xm", {tags={"background"}, looping = true})
 	
-	-- MAP
-	mapTime = 15.0
-	roquetteAuspuffAnimation = makeAnimations("media/images/rocketburst.png", 160, {burst = {frames = {1,2,3}, interval = 0.1}})
-	
-	rockets = {}
-	rocketCount = 100
-	rocketImage = love.graphics.newImage("media/images/rocket.png")
-	for i = 1, rocketCount do
-		local rocket = {position = {love.math.random() * 8000 - 1000, love.math.random() * 2000 - 1000}, parallax = love.math.random() * 0.3 + 0.3}
-		rocket.speed = (4000 - rocket.position[2]) / mapTime
-		table.insert(rockets, rocket)
-	end
-
 	setupLevel() -- HACK (PRESENTATION)
+	
+	globalState = {
+		["gameloop"] = {update = updateGame, draw = drawGame, onEnter = nil, onExit = nil, time = 0},
+		["paused"] = {update = updatePaused, draw = drawPaused, onEnter = nil, time = 0},
+		["error"] = {update = nil, draw = drawError, onEnter = nil, time = 0},
+	}
+	transitionState(globalState, "gameloop")
+	
 end
 
 function love.quit()
