@@ -144,6 +144,9 @@ function love.load()
 		
 		addPlayer(player.color, hairColors[index], jacketColor, pantsColor, player.female, player.controller)
 	end
+	
+	-- sounds
+	lush.play("theme3.xm", {tags="background", looping = true})
 end
 
 function love.quit()
