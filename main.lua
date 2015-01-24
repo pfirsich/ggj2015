@@ -62,10 +62,15 @@ end
 function love.load()
 	if arg[#arg] == "-debug" then require("mobdebug").start() end
 	
+	love.mouse.setVisible(false)
+	
 	-- dirty, dirty, dirty to support my crappy old controller
 	local gpMap = function(...) love.joystick.setGamepadMapping("6d0418c2000000000000504944564944", ...) end
 	gpMap("start", "button", 10)
 	gpMap("leftshoulder", "button", 5)
+	gpMap("a", "button", 2)
+	gpMap("x", "button", 1)
+	gpMap("b", "button", 3)
 	gpMap("leftx", "axis", 1)
 	gpMap("lefty", "axis", 2)
 	
@@ -104,12 +109,12 @@ function love.load()
 	currentMap = setupMap(shapeArray)
 	
 	-- animations
-	local hairAnimSpeed = 0.15
+	local walkAnimPeriod = 0.07
 	
 	playerW = 160
 	playerH = 216
 	
-	local jacketPantsFrames = {walk = {frames = {6, 5, 2, 3, 4}, interval = hairAnimSpeed}, stand = {frames = {1}, interval = 1.0}, 
+	local jacketPantsFrames = {walk = {frames = {6, 5, 2, 3, 4}, interval = walkAnimPeriod}, stand = {frames = {1}, interval = 1.0}, 
 										fall = {frames = {7, 8}, interval = 0.05}, jump = {frames = {9,10}, interval = 0.05}}
 									
 	playerAnimation = makeAnimations("media/images/character.png", playerW, jacketPantsFrames)
@@ -117,7 +122,7 @@ function love.load()
 	playerPantsAnimation = makeAnimations("media/images/pants.png", playerW, jacketPantsFrames)
 	
 	playerHairAnimation = makeAnimations("media/images/hair.png", 83, {
-			walk = {frames = {'1-2',3,'2-1'}, interval = hairAnimSpeed}, stand = {frames = {3}, interval = 1.0},
+			walk = {frames = {'1-2',3,'2-1'}, interval = walkAnimPeriod}, stand = {frames = {3}, interval = 1.0},
 			fall = {frames = {'4-5'}, interval = 0.08}, jump = {frames = {'6-7'}, interval = 0.15}})
 	
 	-- blonde, black, brown, red
@@ -142,7 +147,7 @@ function love.load()
 	end
 	
 	-- sounds
-	lush.play("theme3.xm", {tags="background", looping = true})
+	lush.play("theme3.xm", {tags={"background"}, looping = true})
 end
 
 function love.quit()

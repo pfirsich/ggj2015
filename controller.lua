@@ -14,6 +14,7 @@ end
 
 function joystickController(joystick)
 	joystick = love.joystick.getJoysticks()[joystick]
+	assert(joystick ~= nil)
 	return {
 		move = getJoystickAxisCallback(joystick, "leftx"),
 		jump = watchBinaryInput(joystickButtonCallback(joystick, "a")),

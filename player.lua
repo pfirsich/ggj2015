@@ -1,7 +1,7 @@
 players = {}
 
 function playerCollisonShape()
-	points = {}
+	local points = {}
 	local segments = 5
 	local width = playerW * 0.3
 	local height = playerH * 0.85
@@ -20,7 +20,7 @@ function playerCollisonShape()
 end
 
 function cloneAnimations(animations)
-	ret = {}
+	local ret = {}
 	for k, v in pairs(animations.frameSets) do
 		ret[k] = v:clone()
 	end
@@ -52,17 +52,17 @@ function updatePlayers()
 		local player = players[i]
 		
 		local move = player.controller.move()
-		move = math.abs(move) > 0.2 and move * 900.0 or 0.0
+		move = math.abs(move) > 0.2 and move * 1800.0 or 0.0
 		player.velocity[1] = player.velocity[1] + move * simulationDt
 
 		-- gravity
-		if not player.downCollision or player.velocity[2] > 90.0 then
-			player.velocity[2] = player.velocity[2] + 1800.0 * simulationDt
+		if not player.downCollision or player.velocity[2] > 130.0 then
+			player.velocity[2] = player.velocity[2] + 3000.0 * simulationDt
 		end
 		
 		-- jumping
 		if player.controller.jump().pressed and player.downCollision then
-			player.velocity[2] = -1400.0
+			player.velocity[2] = -2400.0
 		end
 		
 		-- friction and integration
