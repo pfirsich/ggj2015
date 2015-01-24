@@ -27,20 +27,6 @@ function drawEscapes()
 		if escape.drawCallback ~= nil then 
 			escape.drawCallback(escape) 
 		end
-		
-		if escape.messageShowing then
-			local x = escape.position[1] + escape.relativeMessagePosition[1]
-			local y = escape.position[2] + escape.relativeMessagePosition[2]
-			
-			love.graphics.setColor(0,0,0,100)
-			love.graphics.rectangle("fill", x, y, escape.width, escape.height)
-			love.graphics.setColor(0,0,0,225)	
-			love.graphics.rectangle("line", x, y, escape.width, escape.height)
-			
-			love.graphics.setFont(smallFont)
-			love.graphics.setColor(255,255,255,255)	
-			love.graphics.printf(escape.text, x, y+2, escape.width, "center")
-		end
 	end
 end
 
@@ -54,14 +40,17 @@ function updateEscapes()
 				if r < escape.activateRadius and player.controller.interact().pressed  then
 					lush.play("interact.wav")
 					if not escape.messageShowing then
+						local x = escape.position[1] + escape.relativeMessagePosition[1]
+						local y = escape.position[2] + escape.relativeMessagePosition[2]
+						spawnBubble(escape.text, {x, y})
 						escape.messageShowing = true
 					else
 						if escape.activateCallback ~= nil then 
 							escape.activateCallback(escape, player) 
 						end
 						escape.activated = true
+						break
 					end
-					break
 				end
 			end
 		end

@@ -1,3 +1,8 @@
+function transformPoint(point)
+	return {(point[1] - camera.position[1]) * camera.scale + xRes/2,
+				(point[2] - camera.position[2]) * camera.scale + yRes/2}
+end
+
 function applyCameraTransforms(position, scale, parallax)
 	parallax = parallax or 1.0
 	love.graphics.translate(xRes/2, yRes/2)
@@ -50,6 +55,7 @@ function drawGame()
 	love.graphics.pop()
 	
 	-- HUD
+	drawBubbles()
 	drawTimer()
 end
 

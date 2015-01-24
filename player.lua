@@ -53,7 +53,8 @@ function addPlayer(color, hairColor, jacketColor, pantsColor, female, controller
 			animState = "stand", 
 			downCollision = false, 
 			stunStart = -math.huge,
-			stunned = false
+			stunned = false,
+			nextAnimUpdate = -math.huge
 		})
 end
 
@@ -75,7 +76,9 @@ function updatePlayers()
 	
 	for i = 1, #players do
 		local player = players[i]
-		player.stunned = not (getStateVar(globalState, "time") - player.stunStart > 0.7)
+		
+		local stunTime = 0.7
+		player.stunned = not (getStateVar(globalState, "time") - player.stunStart > stunTime)
 		
 		-- move
 		local move = player.controller.move()
@@ -105,8 +108,13 @@ function updatePlayers()
 					other.stunStart = getStateVar(globalState, "time")
 					other.velocity = vadd(other.velocity, vmul(dirVec, 850.0))
 					lush.play("hurt.wav", {tags={"ingame"}})
+					
+					other.animState = "stun"
+					other.nextAnimUpdate = getStateVar(globalState, "time") + stunTime
 				end
 			end
+			player.animState = "shove"
+			player.nextAnimUpdate = getStateVar(globalState, "time") + 0.1
 		end
 		
 		-- friction and integration
@@ -135,36 +143,32 @@ function updatePlayers()
 			player.velocity = vmul(orthoMTV, vdot(orthoMTV, player.velocity))
 		end
 		
-		if not player.stunned then
-			updateAnimations(player.animations)
-			updateAnimations(player.hairAnimations)
-			updateAnimations(player.pantsAnimations)
-			updateAnimations(player.jacketAnimations)
-		end
+		updateAnimations(player.animations)
+		updateAnimations(player.hairAnimations)
+		updateAnimations(player.pantsAnimations)
+		updateAnimations(player.jacketAnimations)
 		
-		-- horizontal animation
-		local walkThresh = 30
-		if player.velocity[1] > walkThresh then
-			player.animState = "walk"
-			player.direction = "r" 
-		elseif player.velocity[1] < -walkThresh then
-			player.animState = "walk"
-			player.direction = "l" 
-		else
-			if player.animState ~= "stand" then player.animState = "stand" end
-		end
-		
-		-- vertical animation
-		local jumpThresh = 20
-		local fallThresh = 20
-		if player.velocity[2] > jumpThresh and not player.downCollision then
-			player.animState = "jump"
-		elseif player.velocity[2] < -fallThresh and not player.downCollision then
-			player.animState = "fall"
-		end
-		
-		if player.stunned then
-			player.animState = "fall"
+		if player.nextAnimUpdate < getStateVar(globalState, "time") then
+			-- horizontal animation
+			local walkThresh = 30
+			if player.velocity[1] > walkThresh then
+				player.animState = "walk"
+				player.direction = "r" 
+			elseif player.velocity[1] < -walkThresh then
+				player.animState = "walk"
+				player.direction = "l" 
+			else
+				if player.animState ~= "stand" then player.animState = "stand" end
+			end
+			
+			-- vertical animation
+			local jumpThresh = 20
+			local fallThresh = 20
+			if player.velocity[2] > jumpThresh and not player.downCollision then
+				player.animState = "jump"
+			elseif player.velocity[2] < -fallThresh and not player.downCollision then
+				player.animState = "fall"
+			end
 		end
 	end
 end
