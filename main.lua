@@ -62,16 +62,16 @@ end
 function love.load()
 	if arg[#arg] == "-debug" then require("mobdebug").start() end
 	
+	love.mouse.setVisible(false)
+	
 	-- dirty, dirty, dirty to support my crappy old controller
 	local gpMap = function(...) love.joystick.setGamepadMapping("6d0418c2000000000000504944564944", ...) end
 	gpMap("start", "button", 10)
-	gpMap("triggerright", "button", 8)
-	gpMap("rightshoulder", "button", 6)
-	gpMap("leftshoulder", "button", 5)
+	gpMap("a", "button", 2)
+	gpMap("x", "button", 1)
+	gpMap("b", "button", 3)
 	gpMap("leftx", "axis", 1)
 	gpMap("lefty", "axis", 2)
-	gpMap("rightx", "axis", 3)
-	gpMap("righty", "axis", 4)
 	
 	Config = loadConfig("config.cfg")
 	lush.setDefaultVolume(Config.defaultVolume or 1.0)
