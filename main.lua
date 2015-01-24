@@ -73,11 +73,12 @@ function love.load()
 	hugeFont = love.graphics.newFont("media/Anke.ttf", 72)
 	
 	
-	-- dirty, dirty, dirty to support my crappy old controller
+	-- dirty, dirty, dirty to support my crappy old controllers
 	local gpMap = function(...) love.joystick.setGamepadMapping("6d0418c2000000000000504944564944", ...) end
 	gpMap("start", "button", 10)
 	gpMap("a", "button", 2)
 	gpMap("x", "button", 1)
+	gpMap("y", "button", 4)
 	gpMap("b", "button", 3)
 	gpMap("leftx", "axis", 1)
 	gpMap("lefty", "axis", 2)
