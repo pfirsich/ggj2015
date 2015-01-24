@@ -29,8 +29,8 @@ function drawGame()
 		end
 	end
 	
-	drawPlayers()
 	drawEscapes()
+	drawPlayers()
 	
 	love.graphics.pop()
 end
