@@ -159,6 +159,7 @@ function love.load()
 		["gameloop"] = {update = updateGame, draw = drawGame, onEnter = nil, onExit = nil, time = 0},
 		["paused"] = {update = updatePaused, draw = drawPaused, onEnter = nil, time = 0},
 		["error"] = {update = nil, draw = drawError, onEnter = nil, time = 0},
+		["levelEnd"] = {update = nil, draw = drawLevelEnd, onEnter = nil, time = 0},
 	}
 	transitionState(globalState, "gameloop")
 	

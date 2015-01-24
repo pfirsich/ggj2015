@@ -33,23 +33,25 @@ end
 function updateEscapes()
 	for i = 1, #escapes do
 		local escape = escapes[i]
-		for j = 1, #players do
-			local player = players[j]
-			local r = vnorm(vsub(escape.position, player.position))
-			if r < escape.activateRadius and player.controller.interact().pressed then
-				lush.play("interact.wav")
-				if not escape.messageShowing then
-					local x = escape.position[1] + escape.relativeMessagePosition[1]
-					local y = escape.position[2] + escape.relativeMessagePosition[2]
-					spawnBubble(escape.text, {x, y}, escape.width, escape.height, math.huge, {})
-					escape.messageShowing = true
-				else
-					if escape.activateCallback ~= nil then 
-						escape.activateCallback(escape, player) 
+		if not escape.activated then
+			for j = 1, #players do
+				local player = players[j]
+				local r = vnorm(vsub(escape.position, player.position))
+				if r < escape.activateRadius and player.controller.interact().pressed  then
+					lush.play("interact.wav")
+					if not escape.messageShowing then
+						local x = escape.position[1] + escape.relativeMessagePosition[1]
+						local y = escape.position[2] + escape.relativeMessagePosition[2]
+						spawnBubble(escape.text, {x, y})
+						escape.messageShowing = true
+					else
+						if escape.activateCallback ~= nil then 
+							escape.activateCallback(escape, player) 
+						end
+						escape.activated = true
+						break
 					end
-					escape.activated = true
 				end
-				break
 			end
 		end
 	end

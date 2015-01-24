@@ -15,7 +15,28 @@ function setupLevel()
 		rocket.speed = (4000 - rocket.position[2]) / mapTime
 		table.insert(rockets, rocket)
 	end
+	
 	setupEscapeRocket(4400, 890)
+	setupMobileToilet(2294, 3836)
+end
+
+function setupMobileToilet(x,y)
+	local image = love.graphics.newImage("media/images/toytoy.png")
+	
+	local delta = {0,0}
+	local drawCallback = function (escape) -- draw callback
+		love.graphics.draw(image, escape.position[1], escape.position[2]-290)
+	end
+	local activateCallback = function (escape, player) -- activate callback
+		removePlayer(player)
+	end
+	
+	local escape = addEscape(x, y, "It's just a mobile toilet,\nbut better than nothing!", drawCallback, activateCallback)
+	
+	escape.relativeMessagePosition = {100, 0}
+	escape.height = 100
+	escape.width = 150
+	escape.activateRadius = 150
 end
 
 
