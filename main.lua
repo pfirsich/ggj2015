@@ -74,17 +74,42 @@ function love.load()
 	local shapeArray = loveDoFile("media/mapgeometry_triangulated.lua")
 	currentMap = setupMap(shapeArray)
 	
-	playerW = 160
-	playerH = 204
+	-- animations
+	local hairAnimSpeed = 0.1
+	
 	playerAnimationStrip = love.graphics.newImage("media/images/character.png")
-	playerAnimationGrid = anim8.newGrid(playerW, playerH, playerAnimationStrip:getWidth(), playerAnimationStrip:getHeight())
-	playerWalkAnimation = anim8.newAnimation(playerAnimationGrid:getFrames('5-6', 1,   '8-10', 1), 0.1)
+	playerW = 160
+	playerH = playerAnimationStrip:getHeight()
+	playerAnimationGrid = anim8.newGrid(playerW, playerH, playerAnimationStrip:getWidth(), playerH)
+	playerWalkAnimation = anim8.newAnimation(playerAnimationGrid:getFrames('5-6', 1,   '8-10', 1), hairAnimSpeed)
 	playerStandAnimation = anim8.newAnimation(playerAnimationGrid:getFrames(7, 1), 1.0)
 	playerFallAnimation = anim8.newAnimation(playerAnimationGrid:getFrames(3, 1,   4, 1), 0.05)
 	playerJumpAnimation = anim8.newAnimation(playerAnimationGrid:getFrames(1, 1,   2, 1), 0.05)
+	
+	playerHairStrip = love.graphics.newImage("media/images/hair.png")
+	local hairH = playerHairStrip:getHeight()
+	playerHairGrid = anim8.newGrid(83, hairH, playerHairStrip:getWidth(), hairH)
+	playerHairWalkAnim = anim8.newAnimation(playerHairGrid:getFrames('1-2', 1,   3, 1,   '2-1', 1), hairAnimSpeed)
+	playerHairStandAnim = anim8.newAnimation(playerHairGrid:getFrames(3, 1), 0.2)
+	playerHairFallAnim = anim8.newAnimation(playerHairGrid:getFrames('4-5', 1), 0.08)
+	playerHairJumpAnim = anim8.newAnimation(playerHairGrid:getFrames('6-7', 1), 0.15)
+	
+	-- blonde, black, brown, red
+	local hairColors = {{221, 223, 17}, {139, 49, 49}, {96, 96, 96}, {197, 32, 32}}
 		
 	for i, player in ipairs(Config.players) do
-		addPlayer(player.color, player.female, player.controller)
+		-- hair color
+		local r = love.math.random()
+		local index = 4
+		if r < 0.3 then 
+			index = 1
+		elseif r < 0.6 then
+			index = 2
+		elseif r < 0.9 then
+			index = 3
+		end
+		
+		addPlayer(player.color, hairColors[index], player.female, player.controller)
 	end
 end
 
