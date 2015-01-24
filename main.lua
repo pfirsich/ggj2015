@@ -11,6 +11,7 @@ require "escape"
 require "callbacks"
 require "collision"
 require "utility"
+require "speechbubble"
 require "level1" -- HACK (PRESENTATION)
 HC = require "hardoncollider"
 anim8 = require "anim8"

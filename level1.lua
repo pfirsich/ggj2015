@@ -40,10 +40,11 @@ function setupEscapeRocket(x,y)
 		removePlayer(player)
 	end
 		
-	local escape = addEscape(x, y, "escape rocket", drawCallback, activateCallback)
+	local escape = addEscape(x, y, "An old, rusty rocket.\n Press (A) to use.", drawCallback, activateCallback)
 	
 	escape.relativeMessagePosition = {100, -100}
-	escape.height = 55
+	escape.height = 90
+	escape.width = 200
 	escape.activateRadius = 150
 end
 
