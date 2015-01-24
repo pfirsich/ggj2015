@@ -8,9 +8,10 @@ require "draw"
 require "map"
 require "player"
 require "escape"
-require "callback"
+require "callbacks"
 require "collision"
 require "utility"
+require "level1" -- HACK (PRESENTATION)
 HC = require "hardoncollider"
 anim8 = require "anim8"
 
@@ -155,7 +156,7 @@ function love.load()
 	-- sounds
 	lush.play("theme3.xm", {tags={"background"}, looping = true})
 	
-	addEscape(1500+200*#players,2550, "Hello")
+	setupLevel() -- HACK (PRESENTATION)
 end
 
 function love.quit()
