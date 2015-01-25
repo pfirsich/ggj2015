@@ -1,18 +1,20 @@
 require "helpers"
 
 function love.load(arg)
-	local filename = "Lvl11.png" -- arg[2]
+	local filename = "Lvl2.png" -- arg[2]
 	
-	love.filesystem.setIdentity("PolygonEditor")
+	love.filesystem.setIdentity("GGJ 2015 Game")
 	love.keyboard.setKeyRepeat(true)
+	love.window.setTitle("GGJ 2015 Map Editor")
+	love.window.setMode(1024, 768, {resizable=true})
 	
 	image = love.graphics.newImage(filename)
 	polygons = {}
 	currentPolygon = {}
 	
 	scale = 1
-	translateX = 0
-	translateY = 0
+	translateX = image:getWidth()/2
+	translateY = image:getHeight()/2
 end
 
 function love.draw()
@@ -39,7 +41,10 @@ function love.draw()
 	if #currentPolygon > 2 then
 		love.graphics.line(unpack(currentPolygon))
 	end
+	
 	love.graphics.pop()
+		
+	love.graphics.printf("Mouse Wheel: zoom\nArrow keys: Move map\nLeft click: Draw polygon\nSpace key: Finish polygon\nRight click on a polygon: Delete\nMiddle click on a polygon: Triangulate \n's' key: Save to file\n'l' key: Load from file", 10, 10, 400)
 end
 
 function love.mousepressed(x,y, button)
@@ -81,9 +86,9 @@ function love.keypressed(key, isrepeat)
 	if key == " " then
 		finishPolygon()
 	elseif key == "s" then
-		savePolygons("output.lua")
+		savePolygons("media/mapgeometry.lua")
 	elseif key == "l" then
-		loadPolygons("output.lua")
+		loadPolygons("media/mapgeometry.lua")
 	elseif key == "right" then
 		translateX = translateX + 50
 	elseif key == "left" then
