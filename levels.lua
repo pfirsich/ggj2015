@@ -21,15 +21,17 @@ function registerLevel(filename)
 	
 	extendTable(loveDoFile(filename), level)
 	assert(level.name, "Level not named")
-	levels[level.name] = level
+	levels[#levels + 1] = level
 end
 
 function loadLevel(name)
-	if levels[name] ~= nil then
-		currentLevel = levels[name]
-	else
-		error("Level '" .. name .. "' has not been registered.")
+	for i, level in ipairs(levels) do
+		if level.name == name then
+			currentLevel = level
+			return
+		end
 	end
+	error("Level '" .. name .. "' has not been registered.")
 end
 
 function setupLevel()

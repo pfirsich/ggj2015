@@ -40,6 +40,9 @@ function updatePaused()
 		if players[playerId].controller.pause().pressed then
 			transitionState(globalState, "gameloop")
 		end
+		if menuInputs.enter().pressed then
+			transitionState(globalState, "menu")
+		end 
 	end
 end
 
