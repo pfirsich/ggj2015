@@ -13,6 +13,7 @@ require "utility"
 require "speechbubble"
 require "particles"
 require "levels"
+require "menu"
 HC = require "hardoncollider"
 anim8 = require "anim8"
 
@@ -113,7 +114,7 @@ function love.load()
 	
 	local playerFrames = {walk = {frames = {6, 5, 2, 3, 4}, interval = walkAnimPeriod}, stand = {frames = {1}, interval = 1.0}, 
 										fall = {frames = {7, 8}, interval = 0.05}, jump = {frames = {9,10}, interval = 0.05}, shove = {frames = {11}, interval = 1.0}, 
-										stun = {frames = {7}, interval = 1.0}, kick = {frames = {4}, interval = 1.0}}
+										stun = {frames = {7}, interval = 1.0}, kick = {frames = {12}, interval = 1.0}}
 									
 	playerAnimation = makeAnimations("media/images/character.png", playerW, playerFrames)
 	playerJacketAnimation = makeAnimations("media/images/jackets.png", playerW, playerFrames)
@@ -122,26 +123,11 @@ function love.load()
 	playerHairAnimation = makeAnimations("media/images/hair.png", 83, {
 			walk = {frames = {'1-2',3,'2-1'}, interval = walkAnimPeriod}, stand = {frames = {3}, interval = 1.0},
 			fall = {frames = {'4-5'}, interval = 0.08}, jump = {frames = {'6-7'}, interval = 0.15}, shove = {frames = {3}, interval = 1.0}, 
-			stun = {frames = {4}, interval = 1.0}, kick = {frames = {1}, interval = 1.0}})
+			stun = {frames = {4}, interval = 1.0}, kick = {frames = {3}, interval = 1.0}})
 	
 	-- blonde, black, brown, red
-	local hairColors = {{221, 223, 17}, {139, 49, 49}, {96, 96, 96}, {197, 32, 32}}
 	for i, playerController in ipairs(Config.playerControllers) do
-		-- hair color
-		local r = love.math.random()
-		local index = 4
-		if r < 0.3 then 
-			index = 1
-		elseif r < 0.6 then
-			index = 2
-		elseif r < 0.9 then
-			index = 3
-		end
-		
-		local jacketColor = {love.math.random(255),love.math.random(255),love.math.random(255)}
-		local pantsColor = love.math.random() < 0.5 and {20,20,200} or {150,75,0}
-		
-		addPlayer(hairColors[index], jacketColor, pantsColor, playerController)
+		addPlayer(playerController)
 	end
 	
 	-- sounds
@@ -158,7 +144,7 @@ function love.load()
 		["paused"] = {update = updatePaused, draw = drawPaused, onEnter = nil, time = 0},
 		["error"] = {update = nil, draw = drawError, onEnter = nil, time = 0},
 		["levelEnd"] = {update = nil, draw = drawLevelEnd, onEnter = nil, time = 0},
-		["menu"] = {update = 
+		["menu"] = {update = updateMenu, draw = drawMenu, time = 0}
 	}
 	transitionState(globalState, "gameloop")
 end
