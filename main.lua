@@ -98,8 +98,17 @@ function love.load()
 	bgLayers = {}
 	local parallaxes = {1.0, 0.9, 1.0, 0.4, 0.3, 1.0}
 	for i = 1, bgLayerCount do
-		filename = "media/images/Lvl" .. tostring(level) .. tostring(i) .. ".png.cropped"
-		bgLayers[i] = {image = love.graphics.newImage(filename .. ".png"), parallax = parallaxes[i], cropData = loveDoFile(filename .. ".lua")}
+		filename = "media/images/Lvl" .. tostring(level) .. tostring(i) .. ".png"
+		if love.filesystem.isFile(filename .. ".cropped.png") then
+			filename = filename .. ".cropped"
+			bgLayers[i] = {image = love.graphics.newImage(filename .. ".png"), cropData = loveDoFile(filename .. ".lua")}
+		else
+			bgLayers[i] = {image = love.graphics.newImage(filename .. ".png"), cropData = {top = 0, left = 0}}
+			bgLayers[i].originalWidth = bgLayers[i].image:getWidth()
+			bgLayers[i].originalHeight = bgLayers[i].image.getHeight()
+			bgLayers[i].bottom, bgLayers[i].right = bgLayers[i].originalHeight, bgLayers[i].originalWidth
+		end
+		bgLayers[i].parallax = parallaxes[i]
 	end
 	mapSize = {bgLayers[1].image:getWidth(), bgLayers[1].image:getHeight() * 5.0}
 
@@ -132,7 +141,7 @@ function love.load()
 	-- blonde, black, brown, red
 	local hairColors = {{221, 223, 17}, {139, 49, 49}, {96, 96, 96}, {197, 32, 32}}
 		
-	for i, player in ipairs(Config.players) do
+	for i, playerController in ipairs(Config.playerControllers) do
 		-- hair color
 		local r = love.math.random()
 		local index = 4
@@ -147,7 +156,7 @@ function love.load()
 		local jacketColor = {love.math.random(255),love.math.random(255),love.math.random(255)}
 		local pantsColor = love.math.random() < 0.5 and {20,20,200} or {150,75,0}
 		
-		addPlayer(player.color, hairColors[index], jacketColor, pantsColor, player.female, player.controller)
+		addPlayer(hairColors[index], jacketColor, pantsColor, playerController)
 	end
 	
 	-- sounds
