@@ -12,46 +12,12 @@ function applyCameraTransforms(position, scale, parallax)
 end
 
 function drawGame()
-	drawRockets() -- HACK
-	
-	for layer = bgLayerCount, 1, -1 do
-		love.graphics.push()
-		local img = bgLayers[layer].image
-		applyCameraTransforms(camera.position, camera.scale, bgLayers[layer].parallax)
-		love.graphics.draw(img, bgLayers[layer].cropData.left, bgLayers[layer].cropData.top, 0, 1.0, 1.0)
-		
-		if layer == bgLayerCount then
-			-- HACK (PRESENTATION)
-			love.graphics.setColor(108, 83, 36)
-			love.graphics.rectangle("fill", -10000, 4000, 100000, 100000)
-			love.graphics.setColor(255, 255, 255)
-		end
-		
-		love.graphics.translate(bgLayers[layer].cropData.originalWidth/2, bgLayers[layer].cropData.originalHeight/2)
-		love.graphics.scale(-1.0, 1.0)
-		love.graphics.translate(-bgLayers[layer].cropData.originalWidth/2, -bgLayers[layer].cropData.originalHeight/2)
-		
-		love.graphics.draw(img, bgLayers[layer].cropData.left - bgLayers[layer].cropData.originalWidth + 5, bgLayers[layer].cropData.top, 0, 1.0, 1.0)
-		love.graphics.draw(img, bgLayers[layer].cropData.left + bgLayers[layer].cropData.originalWidth - 5, bgLayers[layer].cropData.top, 0, 1.0, 1.0)
-		
-		love.graphics.pop()
-	end
+	drawLevel()
 	
 	love.graphics.push()
 	applyCameraTransforms(camera.position, camera.scale)
-	
-	-- debug draw
-	if true then
-		love.graphics.setColor(255, 255, 255, 100)
-		local shapes = currentMap.shapes
-		for i = 1, #shapes do
-			love.graphics.polygon("fill", unpack(shapes[i]))
-		end
-	end
-	
 	drawEscapes()
 	drawPlayers()
-	
 	love.graphics.pop()
 	
 	-- HUD
@@ -61,24 +27,24 @@ end
 
 function drawTimer()
 	local time = globalState["gameloop"]["time"]
-	local remaining = round(mapTime - time, 0)
+	local remaining = round(currentLevel.time - time, 0)
 	
-	if remaining <= 0 then -- HACK (PRESENTATION)
+	if remaining <= 0 then  -- HACK
 		transitionState(globalState, "levelEnd")
-		lush.play("explosion.wav")
-		return 
+		finishLevel()
+	else
+		local margin = 10
+		local countdownWidth = 200
+		
+		local x = (xRes-countdownWidth-margin)
+		local y = margin
+		
+		love.graphics.setFont(hugeMonospaceFont)
+		love.graphics.setColor(255, 255, 0, 255)
+		love.graphics.printf(tostring(remaining), x, y, countdownWidth, "right")
 	end
-
-	local margin = 10
-	local countdownWidth = 200
-	
-	local x = (xRes-countdownWidth-margin)
-	local y = margin
-	
-	love.graphics.setFont(hugeMonospaceFont)
-	love.graphics.setColor(255, 255, 0, 255)
-	love.graphics.printf(tostring(remaining), x, y, countdownWidth, "right")
 end
+
 
 function drawPaused()
 	drawGame()
