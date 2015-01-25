@@ -86,6 +86,8 @@ end
 function love.load()
 	if arg[#arg] == "-debug" then require("mobdebug").start() end
 	
+	local icon = love.image.newImageData("media/images/icon.png")
+	love.window.setIcon(icon)
 	love.mouse.setVisible(false)
 	
 	smallFont = love.graphics.newFont("media/Anke.ttf", 24)
