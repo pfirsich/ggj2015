@@ -12,10 +12,11 @@ function applyCameraTransforms(position, scale, parallax)
 end
 
 function drawGame()
-	drawLevel()
+	drawLevelBackground()
 	
 	love.graphics.push()
 	applyCameraTransforms(camera.position, camera.scale)
+	drawLevelObjects()
 	drawEscapes()
 	drawPlayers()
 	drawParticles()
