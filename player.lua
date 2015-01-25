@@ -41,9 +41,24 @@ function resetPlayerCollisionShapes()
 	end
 end
 
-function addPlayer(hairColor, jacketColor, pantsColor, controller)
+function addPlayer(controller)
 	--local shape = collider:addRectangle(0, 0, playerW / 4.0, playerH * 0.8)
 	local shape = playerCollisonShape()
+	local hairColors = {{221, 223, 17}, {139, 49, 49}, {96, 96, 96}, {197, 32, 32}}
+	
+	local r = love.math.random()
+	local index = 4
+	if r < 0.3 then 
+		index = 1
+	elseif r < 0.6 then
+		index = 2
+	elseif r < 0.9 then
+		index = 3
+	end
+	
+	local hairColor = hairColors[index]
+	local jacketColor = {love.math.random(255),love.math.random(255),love.math.random(255)}
+	local pantsColor = love.math.random() < 0.5 and {20,20,200} or {150,75,0}
 
 	table.insert(players, {
 			color = color, 

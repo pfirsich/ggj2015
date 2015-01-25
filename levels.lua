@@ -49,10 +49,10 @@ function setupLevel()
 		else
 			layer.image = love.graphics.newImage(layer.file)
 			layer.cropData = {top = 0, left = 0}
-			layer.cropData.originalWidth = bgLayers[i].image:getWidth()
-			layer.cropData.originalHeight = bgLayers[i].image:getHeight()
-			layer.cropData.bottom = bgLayers[i].cropData.originalHeight
-			layer.cropData.right = bgLayers[i].cropData.originalWidth
+			layer.cropData.originalWidth = layer.image:getWidth()
+			layer.cropData.originalHeight = layer.image:getHeight()
+			layer.cropData.bottom = layer.cropData.originalHeight
+			layer.cropData.right = layer.cropData.originalWidth
 		end
 	end
 	mapSize = {currentLevel.layers[1].cropData.originalWidth, currentLevel.layers[1].cropData.originalHeight} -- HACK (put into level!)
@@ -63,7 +63,7 @@ function setupLevel()
 	
 	local polygons = loveDoFile(currentLevel.geometryFile)
 	
-	local wallThickness = 50
+	local wallThickness = 10000
 	table.insert(polygons, {0,mapSize[2],  0,0,  -wallThickness,0,  -wallThickness,mapSize[2]})
 	table.insert(polygons, {mapSize[1],mapSize[2],  mapSize[1]+wallThickness,mapSize[2],  mapSize[1]+wallThickness,0,  mapSize[1],0})
 	
@@ -75,6 +75,10 @@ function setupLevel()
 	end
 	
 	resetPlayerCollisionShapes()
+	
+	for i=1,#players do
+		players[i].position = {currentLevel.spawn[1]+100*i, currentLevel.spawn[2]}
+	end
 	
 	if currentLevel.setupCallback then
 		currentLevel.setupCallback()
@@ -89,47 +93,57 @@ function updateLevel()
 end
 
 
-function drawLevel()
+function drawLevelBackground()
 	if currentLevel.drawBackgroundCallback then
 		currentLevel.drawBackgroundCallback()
 	end
-	
+		
 	for i=#currentLevel.layers, 1, -1 do
 		local layer = currentLevel.layers[i]
+		local yOffset = mapSize[2] - layer.cropData.originalHeight
 		
 		love.graphics.push()
 		
 		love.graphics.setColor(255,255,255,255)
 		applyCameraTransforms(camera.position, camera.scale, layer.parallax)
+		
+		love.graphics.translate(0, yOffset)
+		
 		love.graphics.draw(layer.image, layer.cropData.left, layer.cropData.top)
 
-		love.graphics.setColor(unpack(currentLevel.groundColor))
-		love.graphics.rectangle("fill", -10000, 4000, 100000, 100000)
-		love.graphics.setColor(255, 255, 255)
+		if layer.ground then
+			love.graphics.setColor(unpack(layer.ground))
+			love.graphics.rectangle("fill", -10000, layer.cropData.originalHeight-1, 100000, 100000)
+			love.graphics.setColor(255, 255, 255)
+		end
 		
 		love.graphics.translate(layer.cropData.originalWidth/2, layer.cropData.originalHeight/2)
 		love.graphics.scale(-1.0, 1.0)
 		love.graphics.translate(-layer.cropData.originalWidth/2, -layer.cropData.originalHeight/2)
 		
 		if layer.mirror then
-			love.graphics.draw(layer.image, layer.cropData.left - layer.cropData.originalWidth + 5, layer.cropData.top, 0, 1.0, 1.0)
-			love.graphics.draw(layer.image, layer.cropData.left + layer.cropData.originalWidth - 5, layer.cropData.top, 0, 1.0, 1.0)
+			love.graphics.draw(layer.image, layer.cropData.left - layer.cropData.originalWidth + 5, layer.cropData.top)
+			love.graphics.draw(layer.image, layer.cropData.left + layer.cropData.originalWidth - 5, layer.cropData.top)
 		end
 		
 		love.graphics.pop()
 	end
 	
-	if true then
+
+	if currentLevel.drawCallback then
+		currentLevel.drawCallback()
+	end
+end
+
+function drawLevelObjects()
+	if false then
 		love.graphics.setColor(255, 255, 255, 100)
 		for i = 1, #currentLevel.shapes do
 			love.graphics.polygon("fill", unpack(currentLevel.shapes[i]))
 		end
 	end
-	
-	if currentLevel.drawCallback then
-		currentLevel.drawCallback()
-	end
 end
+
 
 function finishLevel()
 	if currentLevel.finishCallback then

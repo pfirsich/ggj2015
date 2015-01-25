@@ -55,7 +55,7 @@ do
 	end
 	
 	local function setupLevel()
-		roquetteAuspuffAnimation = makeAnimations("media/images/rocketburst.png", 160, {burst = {frames = {1,2,3}, interval = 0.1}})
+		engineAnimation = makeAnimations("media/images/rocketburst.png", 160, {burst = {frames = {1,2,3}, interval = 0.1}})
 		
 		rockets = {}
 		rocketCount = 100
@@ -77,7 +77,7 @@ do
 		for i = 1, rocketCount do
 			rockets[i].position = vadd(rockets[i].position, vmul({imageInvSlope, 1.0}, rockets[i].speed * simulationDt))
 		end
-		roquetteAuspuffAnimation.frameSets.burst:update(simulationDt)
+		engineAnimation.frameSets.burst:update(simulationDt)
 	end
 
 	local function drawRockets()
@@ -86,7 +86,7 @@ do
 			love.graphics.push()
 			applyCameraTransforms(camera.position, camera.scale, rockets[i].parallax)
 			love.graphics.draw(rocketImage, rockets[i].position[1], rockets[i].position[2])
-			roquetteAuspuffAnimation.frameSets.burst:draw(roquetteAuspuffAnimation.image, rockets[i].position[1] - 150, rockets[i].position[2] - 70, imageAngle)
+			engineAnimation.frameSets.burst:draw(engineAnimation.image, rockets[i].position[1] - 150, rockets[i].position[2] - 70, imageAngle)
 			love.graphics.pop()
 		end
 	end
@@ -97,13 +97,13 @@ do
 
 	return {
 		name = "Dev Level",
-		geometryFile = "media/mapgeometry.lua",
+		geometryFile = "media/geo_level1.lua",
 		layers = {
-			{ file="media/images/Lvl11.png", parallax=1.0, mirror=false },
-			{ file="media/images/Lvl12.png", parallax=0.9, mirror=true },
-			{ file="media/images/Lvl13.png", parallax=1.0, mirror=true },
-			{ file="media/images/Lvl14.png", parallax=0.4, mirror=true },
-			{ file="media/images/Lvl15.png", parallax=0.3, mirror=true },
+			{ file="media/images/Lvl11.png", parallax=1.0, mirror=false, ground={215, 164, 69} },
+			{ file="media/images/Lvl12.png", parallax=0.9, mirror=true},
+			{ file="media/images/Lvl13.png", parallax=1.0, mirror=true, ground={42,41,27}},
+			{ file="media/images/Lvl14.png", parallax=0.4, mirror=true, ground={108,83,36} },
+			{ file="media/images/Lvl15.png", parallax=0.3, mirror=true, ground={82,63,27} },
 		},
 		groundColor = {108, 83, 36},
 		backgroundColor = {33, 7, 0},
