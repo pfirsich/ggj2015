@@ -29,11 +29,20 @@ Please have all the controller you want to use connected before you play the gam
 
 Technology
 ----------
-Made using löve2d (https://love2d.org/) and using the libraries HardonCollider(http://vrld.github.io/HardonCollider/) and anim8(https://github.com/kikito/anim8/). All of these are *awesome* libraries by awesome people.
+Made using löve2d (https://love2d.org/) and using the libraries HardonCollider (http://vrld.github.io/HardonCollider/) and anim8 (https://github.com/kikito/anim8/). All of these are *awesome* libraries by awesome people.
 Also we used http://www.bfxr.net/ for the sounds and made the music using MilkyTracker.
 	
+For many other ways to get this game to run (e.g. on Linux and Mac OS X), visit löve2d's website.
+	
 Fonts from: Google Fonts and Open Font Library
-Made by Jonas Lieb, Lukas Schnitzler, Joel Schumacher during Global Game Jam 2015
-See:
+
+Credits
+-------
+Joel Schumacher - Programming
+Jonas Lieb - Programming, Music
+Lukas Schnitzler - Graphics, Levels
+Made during Global Game Jam 2015
+
+Websites:
 http://theshoemaker.de/
 http://jonas-lieb.de/
