@@ -1,5 +1,5 @@
 do
-	local mapTime = 30
+	local mapTime = 45
 	
 	local imageAngle = -0.655
 	local imageInvSlope = -math.tan(imageAngle)

@@ -233,7 +233,6 @@ function love.run()
 			tickSimulation()
 			
 			tickFreq = 1.0 / (love.timer.getTime() - start)
-			print(tickFreq)
 		end
 		
 		lush.update()
