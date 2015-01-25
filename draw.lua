@@ -12,7 +12,7 @@ function applyCameraTransforms(position, scale, parallax)
 end
 
 function drawGame()
-	drawRockets()
+	drawRockets() -- HACK
 	
 	for layer = bgLayerCount, 1, -1 do
 		love.graphics.push()
