@@ -119,8 +119,8 @@ function love.load()
 	-- map
 	local shapeArray = loveDoFile("media/mapgeometry.lua")
 	local wallThickness = 50
-	table.insert(shapeArray, {0,mapSize[2],  0,0,  -wallThickness,0,  -wallThickness,mapSize[2]})
-	table.insert(shapeArray, {mapSize[1],mapSize[2],  mapSize[1]+wallThickness,mapSize[2],  mapSize[1]+wallThickness,0,  mapSize[1],0})
+	--table.insert(shapeArray, {0,mapSize[2],  0,0,  -wallThickness,0,  -wallThickness,mapSize[2]})
+	--table.insert(shapeArray, {mapSize[1],mapSize[2],  mapSize[1]+wallThickness,mapSize[2],  mapSize[1]+wallThickness,0,  mapSize[1],0})
 	currentMap = setupMap(shapeArray)
 	
 	-- animations
