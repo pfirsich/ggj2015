@@ -19,6 +19,7 @@ function drawGame()
 	drawLevelObjects()
 	drawEscapes()
 	drawPlayers()
+	drawParticles()
 	love.graphics.pop()
 	
 	-- HUD
