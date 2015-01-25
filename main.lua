@@ -137,8 +137,9 @@ function love.load()
 	lush.play("theme3.xm", {tags={"background"}, looping = true})
 	
 	registerLevel("level1.lua")
+	registerLevel("level2.lua")
 	
-	loadLevel("Dev Level") -- hack (hardgecoded)
+	loadLevel("Plant Level") -- hack (hardgecoded)
 	
 	setupLevel()
 	
