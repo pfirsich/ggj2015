@@ -148,10 +148,6 @@ function love.load()
 	registerLevel("level1.lua")
 	registerLevel("level2.lua")
 	
-	loadLevel("Plant Level") -- hack (hardgecoded)
-	
-	setupLevel()
-	
 	globalState = {
 		["gameloop"] = {update = updateGame, draw = drawGame, onEnter = nil, onExit = nil, time = 0},
 		["paused"] = {update = updatePaused, draw = drawPaused, onEnter = nil, time = 0},
