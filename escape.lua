@@ -37,7 +37,7 @@ function updateEscapes()
 			for j = 1, #players do
 				local player = players[j]
 				local r = vnorm(vsub(escape.position, player.position))
-				if r < escape.activateRadius and player.controller.interact().pressed  then
+				if player.alive and r < escape.activateRadius and player.controller.interact().pressed  then
 					lush.play("interact.wav")
 					if not escape.messageShowing then
 						local x = escape.position[1] + escape.relativeMessagePosition[1]

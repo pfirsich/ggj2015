@@ -3,8 +3,10 @@ function updateGame()
 	local xMin, xMax, yMin, yMax = math.huge, -math.huge, math.huge, -math.huge
 	for playerId = 1, #players do
 		local player = players[playerId]
-		xMin, yMin = math.min(player.position[1], xMin), math.min(player.position[2], yMin)
-		xMax, yMax = math.max(player.position[1], xMax), math.max(player.position[2], yMax)
+		if player.alive then
+			xMin, yMin = math.min(player.position[1], xMin), math.min(player.position[2], yMin)
+			xMax, yMax = math.max(player.position[1], xMax), math.max(player.position[2], yMax)
+		end
 	end
 	local defaultZoom = 1.5
 	local xScale = xRes / (xMax - xMin + xRes * defaultZoom)

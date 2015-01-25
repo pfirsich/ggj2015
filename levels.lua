@@ -47,6 +47,10 @@ function setupLevel()
 	
 	love.graphics.setBackgroundColor(unpack(currentLevel.backgroundColor))
 	
+	for i=1,#players do
+		players[i].alive = true
+	end
+	
 	-- layers
 	for i = 1,#currentLevel.layers do
 		local layer = currentLevel.layers[i]
