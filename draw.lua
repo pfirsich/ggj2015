@@ -18,6 +18,7 @@ function drawGame()
 	applyCameraTransforms(camera.position, camera.scale)
 	drawEscapes()
 	drawPlayers()
+	drawParticles()
 	love.graphics.pop()
 	
 	-- HUD
