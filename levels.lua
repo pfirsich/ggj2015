@@ -65,7 +65,7 @@ function setupLevel()
 	
 	local polygons = loveDoFile(currentLevel.geometryFile)
 	
-	local wallThickness = 50
+	local wallThickness = 10000
 	table.insert(polygons, {0,mapSize[2],  0,0,  -wallThickness,0,  -wallThickness,mapSize[2]})
 	table.insert(polygons, {mapSize[1],mapSize[2],  mapSize[1]+wallThickness,mapSize[2],  mapSize[1]+wallThickness,0,  mapSize[1],0})
 	

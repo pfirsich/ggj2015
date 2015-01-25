@@ -31,9 +31,8 @@ function loadConfig(filename)
 		end
 	end
 	
-	xRes, yRes = Config.width, Config.height
-	if xRes == nil then xRes = 1024 end
-	if yRes == nil then yRes = 768 end
+	if Config.width == nil then Config.width = 1024 end
+	if Config.height == nil then Config.height = 768 end
 	
 	local flags = {}
 	local toExtract = {fullscreen = 1, fullscreentype = 1, vsync = 1, fsaa = 1, 
@@ -42,9 +41,29 @@ function loadConfig(filename)
 		if Config[k] then flags[k] = Config[k] end
 	end
 	
-	love.window.setMode(xRes, yRes, flags)
+	if flags.fullscreen == "auto" then
+		autoFullscreen()
+	else
+		love.window.setMode(Config.width, Config.height, flags)
+	end
+	xRes, yRes = love.graphics.getDimensions()
 	
 	return Config
+end
+
+function autoFullscreen()
+	local supportedModes = love.window.getFullscreenModes()
+	table.sort(supportedModes, function(a, b) return a.width*a.height < b.width*b.height end)
+	
+	for i=#supportedModes,1,-1 do
+		local width = supportedModes[i].width
+		local height = supportedModes[i].height
+		local success = love.window.setMode(width, height, {fullscreen=true, vsync=true})
+		if success then return end
+	end
+	if not love.window.setMode(1024, 768, {fullscreen=false, vsync=true}) then
+		error("Could not determine graphics mode.")
+	end
 end
 
 function makeAnimations(filename, frameWidth, frames)

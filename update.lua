@@ -13,6 +13,8 @@ function updateGame()
 	local targetTransformScale = math.min(1.0, xScale, yScale)
 	local targetTransformPos = {(xMin + xMax)/ 2.0, (yMin + yMax)/2.0}
 	local marginX, marginY = xRes/2.0/targetTransformScale, yRes/2.0/targetTransformScale
+	marginX = math.min(mapSize[1]/2, marginX)
+	marginY = math.min(mapSize[2]/2, marginY)
 	targetTransformPos[1] = clamp(targetTransformPos[1], marginX, mapSize[1] - marginX)
 	targetTransformPos[2] = clamp(targetTransformPos[2], marginY, mapSize[2] - marginY)
 	local camPosRel = vsub(targetTransformPos, camera.position)
