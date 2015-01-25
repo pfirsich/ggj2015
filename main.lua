@@ -108,7 +108,7 @@ function love.load()
 		else
 			bgLayers[i] = {image = love.graphics.newImage(filename), cropData = {top = 0, left = 0}}
 			bgLayers[i].originalWidth = bgLayers[i].image:getWidth()
-			bgLayers[i].originalHeight = bgLayers[i].image.getHeight()
+			bgLayers[i].originalHeight = bgLayers[i].image:getHeight()
 			bgLayers[i].bottom, bgLayers[i].right = bgLayers[i].originalHeight, bgLayers[i].originalWidth
 		end
 		bgLayers[i].parallax = parallaxes[i]
