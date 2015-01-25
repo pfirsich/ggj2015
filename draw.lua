@@ -75,7 +75,7 @@ function drawTimer()
 	local x = (xRes-countdownWidth-margin)
 	local y = margin
 	
-	love.graphics.setFont(hugeFont)
+	love.graphics.setFont(hugeMonospaceFont)
 	love.graphics.setColor(255, 255, 0, 255)
 	love.graphics.printf(tostring(remaining), x, y, countdownWidth, "right")
 end

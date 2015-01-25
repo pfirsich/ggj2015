@@ -71,7 +71,7 @@ function love.load()
 	smallFont = love.graphics.newFont("media/Anke.ttf", 24)
 	mediumFont = love.graphics.newFont("media/Anke.ttf", 48)
 	hugeFont = love.graphics.newFont("media/Anke.ttf", 200)
-	
+	hugeMonospaceFont = love.graphics.newFont("media/DroidSansMono.ttf", 200)
 	
 	-- dirty, dirty, dirty to support my crappy old controller
 	local gpMap = function(...) love.joystick.setGamepadMapping("6d0418c2000000000000504944564944", ...) end
