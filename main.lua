@@ -107,8 +107,10 @@ function love.load()
 			bgLayers[i] = {image = love.graphics.newImage(filename .. ".png"), cropData = loveDoFile(filename .. ".lua")}
 		else
 			bgLayers[i] = {image = love.graphics.newImage(filename), cropData = {top = 0, left = 0}}
-			bgLayers[i].cropData = {originalWidth = bgLayers[i].image:getWidth(), originalHeight = bgLayers[i].image:getHeight()}
-			bgLayers[i].cropData = {bottom = bgLayers[i].cropData.originalHeight, right = bgLayers[i].cropData.originalWidth}
+			bgLayers[i].cropData.originalWidth = bgLayers[i].image:getWidth()
+			bgLayers[i].cropData.originalHeight = bgLayers[i].image:getHeight()
+			bgLayers[i].cropData.bottom = bgLayers[i].cropData.originalHeight
+			bgLayers[i].cropData.right = bgLayers[i].cropData.originalWidth
 		end
 		bgLayers[i].parallax = parallaxes[i]
 	end
