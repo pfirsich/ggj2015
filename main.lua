@@ -73,11 +73,12 @@ function love.load()
 	hugeFont = love.graphics.newFont("media/Anke.ttf", 200)
 	hugeMonospaceFont = love.graphics.newFont("media/DroidSansMono.ttf", 200)
 	
-	-- dirty, dirty, dirty to support my crappy old controller
+	-- dirty, dirty, dirty to support my crappy old controllers
 	local gpMap = function(...) love.joystick.setGamepadMapping("6d0418c2000000000000504944564944", ...) end
 	gpMap("start", "button", 10)
 	gpMap("a", "button", 2)
 	gpMap("x", "button", 1)
+	gpMap("y", "button", 4)
 	gpMap("b", "button", 3)
 	gpMap("leftx", "axis", 1)
 	gpMap("lefty", "axis", 2)
@@ -100,16 +101,26 @@ function love.load()
 	bgLayers = {}
 	local parallaxes = {1.0, 0.9, 1.0, 0.4, 0.3, 1.0}
 	for i = 1, bgLayerCount do
-		filename = "media/images/Lvl" .. tostring(level) .. tostring(i) .. ".png.cropped"
-		bgLayers[i] = {image = love.graphics.newImage(filename .. ".png"), parallax = parallaxes[i], cropData = loveDoFile(filename .. ".lua")}
+		filename = "media/images/Lvl" .. tostring(level) .. tostring(i) .. ".png"
+		if love.filesystem.isFile(filename .. ".cropped.png") then
+			filename = filename .. ".cropped"
+			bgLayers[i] = {image = love.graphics.newImage(filename .. ".png"), cropData = loveDoFile(filename .. ".lua")}
+		else
+			bgLayers[i] = {image = love.graphics.newImage(filename), cropData = {top = 0, left = 0}}
+			bgLayers[i].cropData.originalWidth = bgLayers[i].image:getWidth()
+			bgLayers[i].cropData.originalHeight = bgLayers[i].image:getHeight()
+			bgLayers[i].cropData.bottom = bgLayers[i].cropData.originalHeight
+			bgLayers[i].cropData.right = bgLayers[i].cropData.originalWidth
+		end
+		bgLayers[i].parallax = parallaxes[i]
 	end
 	mapSize = {bgLayers[1].cropData.originalWidth, bgLayers[1].cropData.originalHeight}
 
 	-- map
-	local shapeArray = loveDoFile("media/mapgeometry_triangulated.lua")
+	local shapeArray = loveDoFile("media/mapgeometry.lua")
 	local wallThickness = 50
-	table.insert(shapeArray, {0,mapSize[2],  0,0,  -wallThickness,0,  -wallThickness,mapSize[2]})
-	table.insert(shapeArray, {mapSize[1],mapSize[2],  mapSize[1]+wallThickness,mapSize[2],  mapSize[1]+wallThickness,0,  mapSize[1],0})
+	--table.insert(shapeArray, {0,mapSize[2],  0,0,  -wallThickness,0,  -wallThickness,mapSize[2]})
+	--table.insert(shapeArray, {mapSize[1],mapSize[2],  mapSize[1]+wallThickness,mapSize[2],  mapSize[1]+wallThickness,0,  mapSize[1],0})
 	currentMap = setupMap(shapeArray)
 	
 	-- animations
@@ -134,7 +145,7 @@ function love.load()
 	-- blonde, black, brown, red
 	local hairColors = {{221, 223, 17}, {139, 49, 49}, {96, 96, 96}, {197, 32, 32}}
 		
-	for i, player in ipairs(Config.players) do
+	for i, playerController in ipairs(Config.playerControllers) do
 		-- hair color
 		local r = love.math.random()
 		local index = 4
@@ -149,7 +160,7 @@ function love.load()
 		local jacketColor = {love.math.random(255),love.math.random(255),love.math.random(255)}
 		local pantsColor = love.math.random() < 0.5 and {20,20,200} or {150,75,0}
 		
-		addPlayer(player.color, hairColors[index], jacketColor, pantsColor, player.female, player.controller)
+		addPlayer(hairColors[index], jacketColor, pantsColor, playerController)
 	end
 	
 	-- sounds

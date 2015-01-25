@@ -28,7 +28,7 @@ function cloneAnimations(animations)
 	return ret
 end
 
-function addPlayer(color, hairColor, jacketColor, pantsColor, female, controller)
+function addPlayer(hairColor, jacketColor, pantsColor, controller)
 	--local shape = collider:addRectangle(0, 0, playerW / 4.0, playerH * 0.8)
 	local shape = playerCollisonShape()
 	shape.g_type = "player"
