@@ -76,7 +76,7 @@ do
 		name = "Plant Level",
 		geometryFile = "media/geo_level2.lua",
 		layers = {
-			{ file="media/images/lvl21.png", parallax=1.0, mirror=false, ground={215,164,69} },
+			{ file="media/images/Lvl21.png", parallax=1.0, mirror=false, ground={215,164,69} },
 			{ file="media/images/lvl22.png", parallax=0.99, mirror=false },
 			{ file="media/images/lvl23.png", parallax=0.98, mirror=false },
 			{ file="media/images/lvl24.png", parallax=0.98, mirror=false, ground={82,63,27} },
