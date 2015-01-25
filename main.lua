@@ -5,14 +5,13 @@ require "controller"
 require "math_vec"
 require "update"
 require "draw"
-require "map"
 require "player"
 require "escape"
 require "callbacks"
 require "collision"
 require "utility"
 require "speechbubble"
-require "level1" -- HACK (PRESENTATION)
+require "levels"
 HC = require "hardoncollider"
 anim8 = require "anim8"
 
@@ -71,7 +70,7 @@ function love.load()
 	smallFont = love.graphics.newFont("media/Anke.ttf", 24)
 	mediumFont = love.graphics.newFont("media/Anke.ttf", 48)
 	hugeFont = love.graphics.newFont("media/Anke.ttf", 200)
-	
+	hugeMonospaceFont = love.graphics.newFont("media/DroidSansMono.ttf", 200)
 	
 	-- dirty, dirty, dirty to support my crappy old controllers
 	local gpMap = function(...) love.joystick.setGamepadMapping("6d0418c2000000000000504944564944", ...) end
@@ -92,37 +91,9 @@ function love.load()
 	collider = HC(100, collisionStart, nil)
 	
 		-- backgrounds
-	--love.graphics.setBackgroundColor(90, 100, 40)
-	love.graphics.setBackgroundColor(33, 7, 0)
+	love.graphics.setBackgroundColor(0,0,0)
 	
-	
-	level = 1
-	bgLayerCount = 5
-	bgLayers = {}
-	local parallaxes = {1.0, 0.9, 1.0, 0.4, 0.3, 1.0}
-	for i = 1, bgLayerCount do
-		filename = "media/images/Lvl" .. tostring(level) .. tostring(i) .. ".png"
-		if love.filesystem.isFile(filename .. ".cropped.png") then
-			filename = filename .. ".cropped"
-			bgLayers[i] = {image = love.graphics.newImage(filename .. ".png"), cropData = loveDoFile(filename .. ".lua")}
-		else
-			bgLayers[i] = {image = love.graphics.newImage(filename), cropData = {top = 0, left = 0}}
-			bgLayers[i].cropData.originalWidth = bgLayers[i].image:getWidth()
-			bgLayers[i].cropData.originalHeight = bgLayers[i].image:getHeight()
-			bgLayers[i].cropData.bottom = bgLayers[i].cropData.originalHeight
-			bgLayers[i].cropData.right = bgLayers[i].cropData.originalWidth
-		end
-		bgLayers[i].parallax = parallaxes[i]
-	end
-	mapSize = {bgLayers[1].cropData.originalWidth, bgLayers[1].cropData.originalHeight}
 
-	-- map
-	local shapeArray = loveDoFile("media/mapgeometry.lua")
-	local wallThickness = 50
-	--table.insert(shapeArray, {0,mapSize[2],  0,0,  -wallThickness,0,  -wallThickness,mapSize[2]})
-	--table.insert(shapeArray, {mapSize[1],mapSize[2],  mapSize[1]+wallThickness,mapSize[2],  mapSize[1]+wallThickness,0,  mapSize[1],0})
-	currentMap = setupMap(shapeArray)
-	
 	-- animations
 	local walkAnimPeriod = 0.07
 	
@@ -144,7 +115,6 @@ function love.load()
 	
 	-- blonde, black, brown, red
 	local hairColors = {{221, 223, 17}, {139, 49, 49}, {96, 96, 96}, {197, 32, 32}}
-		
 	for i, playerController in ipairs(Config.playerControllers) do
 		-- hair color
 		local r = love.math.random()
@@ -166,7 +136,11 @@ function love.load()
 	-- sounds
 	lush.play("theme3.xm", {tags={"background"}, looping = true})
 	
-	setupLevel() -- HACK (PRESENTATION)
+	registerLevel("level1.lua")
+	
+	loadLevel("Dev Level") -- hack (hardgecoded)
+	
+	setupLevel()
 	
 	globalState = {
 		["gameloop"] = {update = updateGame, draw = drawGame, onEnter = nil, onExit = nil, time = 0},
@@ -175,7 +149,6 @@ function love.load()
 		["levelEnd"] = {update = nil, draw = drawLevelEnd, onEnter = nil, time = 0},
 	}
 	transitionState(globalState, "gameloop")
-	
 end
 
 function love.quit()

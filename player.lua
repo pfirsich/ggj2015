@@ -16,7 +16,13 @@ function playerCollisonShape()
 	points[#points + 1] = width / 2
 	points[#points + 1] = -height
 	
-	return collider:addPolygon(unpack(points))
+	local polygon = collider:addPolygon(unpack(points))
+	
+	polygon.g_type = "player"
+	polygon.g_mtvSum = {0,0}
+	polygon.g_collisionCount = 0
+	
+	return polygon
 end
 
 function cloneAnimations(animations)
@@ -28,12 +34,17 @@ function cloneAnimations(animations)
 	return ret
 end
 
+function resetPlayerCollisionShapes()
+	for i=1,#players do
+		local player = players[i]
+		player.collisionShape = playerCollisonShape()
+	end
+end
+
 function addPlayer(hairColor, jacketColor, pantsColor, controller)
 	--local shape = collider:addRectangle(0, 0, playerW / 4.0, playerH * 0.8)
 	local shape = playerCollisonShape()
-	shape.g_type = "player"
-	shape.g_mtvSum = {0,0}
-	shape.g_collisionCount = 0
+
 	table.insert(players, {
 			color = color, 
 			hairColor = hairColor, 
