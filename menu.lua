@@ -58,8 +58,8 @@ function updateMenu()
 end
 
 function drawMenu()
+	love.graphics.setBackgroundColor(50, 50, 50, 255)
 	if menuType == "player" then
-		love.graphics.setBackgroundColor(50, 50, 50, 255)
 		love.graphics.setColor(255, 255, 255, 255)
 		love.graphics.draw(gameLogo, 0, yRes/2 - gameLogo:getHeight()/2 * logoScale, 0, logoScale, logoScale)
 		love.graphics.draw(gameTitle, xRes - gameTitle:getWidth() * titleScale, 0, 0, titleScale, titleScale)

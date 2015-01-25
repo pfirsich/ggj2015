@@ -67,7 +67,7 @@ do
 		end
 		
 		setupEscapeRocket(4400, 890)
-		setupMobileToilet(2294, 3836)
+	--	setupMobileToilet(2294, 3836)
 	--	setupMobileToilet(2890, 1380)
 	--	setupMobileToilet(3050, 1380)
 	end

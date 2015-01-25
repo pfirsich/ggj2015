@@ -1,8 +1,38 @@
 do
-	local mapTime = 120
+	local mapTime = 600
 	
 	local imageAngle = -0.655
 	local imageInvSlope = -math.tan(imageAngle)
+	
+	local function setupEscapeRocket(x,y)
+		local rocket = love.graphics.newImage("media/images/escaperocket.png")
+		local pad = love.graphics.newImage("media/images/emptyescaperocket.png")
+		
+		local delta = {0,0}
+		local drawCallback = function (escape) -- draw callback
+			love.graphics.draw(rocket, escape.position[1]-250+delta[1], escape.position[2]-370+delta[2])
+			love.graphics.draw(pad, escape.position[1]-250, escape.position[2]-370)
+		end
+		local activateCallback = function (escape, player) -- activate callback
+			addCallback(function ()
+				local v = {232, -255}
+				local f = 1.5
+				delta[1] = delta[1] + v[1]*simulationDt*f
+				delta[2] = delta[2] + v[2]*simulationDt*f
+				return true
+			end)
+		
+			removePlayer(player)
+		end
+			
+		local escape = addEscape(x, y, "An old, rusty rocket.\n Press (X) to use.", drawCallback, activateCallback)
+		
+		escape.relativeMessagePosition = {100, -100}
+		escape.height = 90
+		escape.width = 200
+		escape.activateRadius = 150
+	end
+	
 	
 	local function setupLevel()
 		engineAnimation = makeAnimations("media/images/rocketburst.png", 160, {burst = {frames = {1,2,3}, interval = 0.1}})
@@ -15,6 +45,9 @@ do
 			rocket.speed = (0.95*mapSize[2] - rocket.position[2]) / mapTime
 			table.insert(rockets, rocket)
 		end
+		
+		
+		setupEscapeRocket(1685, 470)
 	end
 
 	local function updateRockets()
@@ -44,10 +77,12 @@ do
 		geometryFile = "media/geo_level2.lua",
 		layers = {
 			{ file="media/images/Lvl21.png", parallax=1.0, mirror=false, ground={215,164,69} },
-			--{ file="media/images/Lvl12.png", parallax=0.9, mirror=true },
-			--{ file="media/images/Lvl13.png", parallax=1.0, mirror=true },
-			{ file="media/images/Lvl14.png", parallax=0.6, mirror=true, ground={108,83,36} },
-			{ file="media/images/Lvl15.png", parallax=0.4, mirror=true, ground={82,63,27} },
+			{ file="media/images/Lvl22.png", parallax=0.99, mirror=false },
+			{ file="media/images/Lvl23.png", parallax=0.98, mirror=false },
+			{ file="media/images/Lvl24.png", parallax=0.98, mirror=false, ground={82,63,27} },
+			{ file="media/images/Lvl25.png", parallax=0.98, mirror=false, ground={82,63,27} },
+			{ file="media/images/Lvl14.png", parallax=0.4, mirror=true, ground={82,63,27} },
+			{ file="media/images/Lvl15.png", parallax=0.3, mirror=true, ground={82,63,27} },
 		},
 		groundColor = {108, 83, 36},
 		backgroundColor = {33, 7, 0},

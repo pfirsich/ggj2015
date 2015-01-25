@@ -146,11 +146,6 @@ function love.load()
 			fall = {frames = {'4-5'}, interval = 0.08}, jump = {frames = {'6-7'}, interval = 0.15}, shove = {frames = {3}, interval = 1.0}, 
 			stun = {frames = {4}, interval = 1.0}, kick = {frames = {3}, interval = 1.0}})
 	
-	-- blonde, black, brown, red
-	for i, playerController in ipairs(Config.playerControllers) do
-		--addPlayer(playerController)
-	end
-	
 	-- menu images
 	gameLogo = love.graphics.newImage("media/images/cover.png")
 	gameTitle = love.graphics.newImage("media/images/title.png")
@@ -168,6 +163,7 @@ function love.load()
 	
 	registerLevel("level1.lua")
 	registerLevel("level2.lua")
+	registerLevel("level3.lua")
 	
 	globalState = {
 		["gameloop"] = {update = updateGame, draw = drawGame, onEnter = nil, onExit = nil, time = 0},
