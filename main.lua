@@ -116,7 +116,7 @@ function love.load()
 	mapSize = {bgLayers[1].cropData.originalWidth, bgLayers[1].cropData.originalHeight}
 
 	-- map
-	local shapeArray = loveDoFile("media/mapgeometry_triangulated.lua")
+	local shapeArray = loveDoFile("media/mapgeometry.lua")
 	local wallThickness = 50
 	table.insert(shapeArray, {0,mapSize[2],  0,0,  -wallThickness,0,  -wallThickness,mapSize[2]})
 	table.insert(shapeArray, {mapSize[1],mapSize[2],  mapSize[1]+wallThickness,mapSize[2],  mapSize[1]+wallThickness,0,  mapSize[1],0})
