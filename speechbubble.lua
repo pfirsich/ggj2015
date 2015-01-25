@@ -26,16 +26,18 @@ function updateBubbles()
 end
 
 function drawBubbles()
+	local fadeTime = 0.5 --seconds
 	for i = 1, #bubbles do
 		local bubble = bubbles[i]
+		local alpha = clamp(((bubble.lifetime - bubble.age)-fadeTime)/fadeTime, 0, 1)
 		local pos = transformPoint(bubble.position)
-		love.graphics.setColor(0,0,0,100)
+		love.graphics.setColor(0,0,0,100*alpha)
 		love.graphics.rectangle("fill", pos[1], pos[2], bubble.width, bubble.height)
-		love.graphics.setColor(0,0,0,225)	
+		love.graphics.setColor(0,0,0,225*alpha)	
 		love.graphics.rectangle("line", pos[1], pos[2], bubble.width, bubble.height)
 		
 		love.graphics.setFont(bubble.font)
-		love.graphics.setColor(255,255,255,255)
+		love.graphics.setColor(255,255,255,255*alpha)
 		love.graphics.printf(bubble.text, pos[1], pos[2]+2, bubble.width, "center")
 	end
 end
