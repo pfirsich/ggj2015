@@ -50,6 +50,7 @@ function setupLevel()
 	
 	for i=1,#players do
 		players[i].alive = true
+		players[i].nextAnimUpdate = 0
 	end
 	
 	-- layers
