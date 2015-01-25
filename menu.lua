@@ -1,5 +1,5 @@
 menuType = "player"
-local selectedLevel = nil
+local selectedLevel = 1
 
 function updateMenu()
 	logoScale = 0.8 * xRes/1920

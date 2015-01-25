@@ -38,7 +38,7 @@ function loadConfig(filename)
 	local toExtract = {fullscreen = 1, fullscreentype = 1, vsync = 1, fsaa = 1, 
 								borderless = 1, centered = 1, display = 1, highdpi = 1, srgb = 1, x = 1, y = 1}
 	for k, v in pairs(toExtract) do
-		if Config[k] then flags[k] = Config[k] end
+		if toExtract[k] > 0 then flags[k] = Config[k] end
 	end
 	
 	if flags.fullscreen == "auto" then
@@ -86,6 +86,18 @@ end
 function love.load()
 	if arg[#arg] == "-debug" then require("mobdebug").start() end
 	
+	globalState = {
+		["gameloop"] = {update = updateGame, draw = drawGame, onEnter = nil, onExit = nil, time = 0},
+		["paused"] = {update = updatePaused, draw = drawPaused, onEnter = nil, time = 0},
+		["error"] = {update = nil, draw = drawError, onEnter = nil, time = 0},
+		["levelEnd"] = {update = nil, draw = drawLevelEnd, onEnter = nil, time = 0},
+		["menu"] = {update = updateMenu, draw = drawMenu, time = 0}
+	}
+	
+	Config = loadConfig("config.cfg")
+	lush.setDefaultVolume(Config.defaultVolume or 1.0)
+	lush.setPath("media/sounds/")
+	
 	local icon = love.image.newImageData("media/images/icon.png")
 	love.window.setIcon(icon)
 	love.mouse.setVisible(false)
@@ -104,10 +116,6 @@ function love.load()
 	gpMap("b", "button", 3)
 	gpMap("leftx", "axis", 1)
 	gpMap("lefty", "axis", 2)
-	
-	Config = loadConfig("config.cfg")
-	lush.setDefaultVolume(Config.defaultVolume or 1.0)
-	lush.setPath("media/sounds/")
 	
 	camera = {position = {0,0}, scale = 1.0}
 	
@@ -165,13 +173,13 @@ function love.load()
 	registerLevel("level2.lua")
 	registerLevel("level3.lua")
 	
-	globalState = {
-		["gameloop"] = {update = updateGame, draw = drawGame, onEnter = nil, onExit = nil, time = 0},
-		["paused"] = {update = updatePaused, draw = drawPaused, onEnter = nil, time = 0},
-		["error"] = {update = nil, draw = drawError, onEnter = nil, time = 0},
-		["levelEnd"] = {update = nil, draw = drawLevelEnd, onEnter = nil, time = 0},
-		["menu"] = {update = updateMenu, draw = drawMenu, time = 0}
-	}
+	if Config.overrideMenu then
+		for i, controller in ipairs(Config.playerController) do
+			addPlayer(controller)
+		end
+		menuType = "levels" -- skip player menu
+	end
+	
 	transitionState(globalState, "menu")
 end
 

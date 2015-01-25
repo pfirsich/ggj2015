@@ -112,7 +112,7 @@ function updatePlayers()
 			end
 
 			-- gravity
-			if not player.downCollision or player.velocity[2] > 220.0 then
+			if not player.downCollision or player.velocity[2] > 450.0 then
 				player.velocity[2] = player.velocity[2] + 3000.0 * simulationDt
 			end
 			
