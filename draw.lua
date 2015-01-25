@@ -66,7 +66,7 @@ function drawLevelEnd()
 	love.graphics.setColor(255,255,255,255)
 	love.graphics.rectangle("fill", 0, 0, xRes, yRes)
 	local time = getStateVar(globalState, "time")
-	if time > 12 then
+	if time > 7 then
 		transitionState(globalState, "menu")
 	elseif time > 2 then
 		local value = math.min(255, (time-2)*50)
