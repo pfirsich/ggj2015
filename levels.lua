@@ -39,6 +39,12 @@ function setupLevel()
 		error("Level has not been loaded.")
 	end
 	
+	escapes = {}
+	callbacks = {}
+	bubbles = {}
+	
+	globalState.gameloop.time = 0
+	
 	love.graphics.setBackgroundColor(unpack(currentLevel.backgroundColor))
 	
 	-- layers

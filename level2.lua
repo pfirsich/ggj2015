@@ -81,7 +81,7 @@ do
 			{ file="media/images/Lvl23.png", parallax=0.98, mirror=false },
 			{ file="media/images/Lvl24.png", parallax=0.98, mirror=false, ground={82,63,27} },
 			{ file="media/images/Lvl25.png", parallax=0.98, mirror=false, ground={82,63,27} },
-			{ file="media/images/Lvl14.png", parallax=0.4, mirror=true, ground={82,63,27} },
+			{ file="media/images/Lvl14.png", parallax=0.4, mirror=true, ground={108,83,36} },
 			{ file="media/images/Lvl15.png", parallax=0.3, mirror=true, ground={82,63,27} },
 		},
 		groundColor = {108, 83, 36},
