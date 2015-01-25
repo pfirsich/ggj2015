@@ -15,7 +15,6 @@ do
 		backgroundColor = {33, 7, 0},
 		spawn = {950, 645},
 		time = mapTime,
-		setupCallback = setupLevel,
 		finishCallback = explosion
 	}	
 end
