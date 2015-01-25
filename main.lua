@@ -12,6 +12,7 @@ require "callbacks"
 require "collision"
 require "utility"
 require "speechbubble"
+require "particles"
 require "level1" -- HACK (PRESENTATION)
 HC = require "hardoncollider"
 anim8 = require "anim8"
@@ -123,6 +124,17 @@ function love.load()
 	--table.insert(shapeArray, {mapSize[1],mapSize[2],  mapSize[1]+wallThickness,mapSize[2],  mapSize[1]+wallThickness,0,  mapSize[1],0})
 	currentMap = setupMap(shapeArray)
 	
+	-- particles
+	initParticles()
+	bloodParticles = {spread = 20 / 180 * math.pi, image = love.graphics.newImage("media/images/blood.png"), lifetime = 0.4, 
+							friction = 0.01, angularVelocity = 0.8, gravity = -1000,
+							orientationSpread = math.pi, startSizeX = 0.09, endSizeX = 0.25, startSizeY = 0.09, endSizeY = 0.25,
+							startColor = {100, 50, 50, 255}, endColor = {100, 50, 50, 0}, speed = 400, speedVariance = 50}
+	bloodSprayParticles = {spread = 90 / 180 * math.pi, image = love.graphics.newImage("media/images/blood.png"), lifetime = 0.4, 
+							friction = 0.00, angularVelocity = 0.0, gravity = -3000.0,
+							orientationSpread = 0, startSizeX = 0.06, endSizeX = 0.06, startSizeY = 0.02, endSizeY = 0.02, 
+							startColor = {255, 255, 255, 255}, endColor = {255, 255, 255, 100}, speed = 800, speedVariance = 300}
+	
 	-- animations
 	local walkAnimPeriod = 0.07
 	
@@ -131,7 +143,7 @@ function love.load()
 	
 	local playerFrames = {walk = {frames = {6, 5, 2, 3, 4}, interval = walkAnimPeriod}, stand = {frames = {1}, interval = 1.0}, 
 										fall = {frames = {7, 8}, interval = 0.05}, jump = {frames = {9,10}, interval = 0.05}, shove = {frames = {11}, interval = 1.0}, 
-										stun = {frames = {7}, interval = 1.0}}
+										stun = {frames = {7}, interval = 1.0}, kick = {frames = {4}, interval = 1.0}}
 									
 	playerAnimation = makeAnimations("media/images/character.png", playerW, playerFrames)
 	playerJacketAnimation = makeAnimations("media/images/jackets.png", playerW, playerFrames)
@@ -140,7 +152,7 @@ function love.load()
 	playerHairAnimation = makeAnimations("media/images/hair.png", 83, {
 			walk = {frames = {'1-2',3,'2-1'}, interval = walkAnimPeriod}, stand = {frames = {3}, interval = 1.0},
 			fall = {frames = {'4-5'}, interval = 0.08}, jump = {frames = {'6-7'}, interval = 0.15}, shove = {frames = {3}, interval = 1.0}, 
-			stun = {frames = {4}, interval = 1.0}})
+			stun = {frames = {4}, interval = 1.0}, kick = {frames = {1}, interval = 1.0}})
 	
 	-- blonde, black, brown, red
 	local hairColors = {{221, 223, 17}, {139, 49, 49}, {96, 96, 96}, {197, 32, 32}}
@@ -173,9 +185,9 @@ function love.load()
 		["paused"] = {update = updatePaused, draw = drawPaused, onEnter = nil, time = 0},
 		["error"] = {update = nil, draw = drawError, onEnter = nil, time = 0},
 		["levelEnd"] = {update = nil, draw = drawLevelEnd, onEnter = nil, time = 0},
+		["menu"] = {update = 
 	}
 	transitionState(globalState, "gameloop")
-	
 end
 
 function love.quit()
@@ -236,6 +248,7 @@ function love.run()
 			tickSimulation()
 			
 			tickFreq = 1.0 / (love.timer.getTime() - start)
+			print(tickFreq)
 		end
 		
 		lush.update()

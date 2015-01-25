@@ -32,6 +32,7 @@ function updateGame()
 	updateRockets()
 	updateEscapes()
 	updateBubbles()
+	updateParticles()
 end
 
 function updatePaused()

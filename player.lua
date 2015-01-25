@@ -109,6 +109,8 @@ function updatePlayers()
 						other.stunStart = getStateVar(globalState, "time")
 						other.velocity = vadd(other.velocity, vmul(dirVec, 1500.0))
 						lush.play("hurt.wav", {tags={"ingame"}})
+						spawnParticles(5, other.position, dirVec, bloodParticles)
+						spawnParticles(5, other.position, dirVec, bloodSprayParticles)
 						
 						other.animState = "stun"
 						other.nextAnimUpdate = getStateVar(globalState, "time") + stunTime
@@ -119,8 +121,35 @@ function updatePlayers()
 			player.nextAnimUpdate = getStateVar(globalState, "time") + 0.1
 		end
 		
+		-- kicking
+		if player.controller.kick().pressed and not player.stunned then
+			for i, other in ipairs(players) do
+				if other ~= player then
+					local rel = vsub(other.position, player.position)
+					local relLen = vnorm(rel)
+					local dirVec = player.direction == "l" and {-1, 0} or {1, 0}
+					if relLen < 80.0 and rel[1] * dirVec[1] / relLen > math.cos(35) and not other.stunned then
+						other.stunStart = getStateVar(globalState, "time")
+						local kickAngle = -60.0 / 180.0 * math.pi
+						dirVec = {math.cos(kickAngle) * dirVec[1], math.sin(kickAngle)}
+						other.velocity = vadd(other.velocity, vmul(dirVec, 2000.0))
+						lush.play("hurt.wav", {tags={"ingame"}})
+						spawnParticles(5, other.position, dirVec, bloodParticles)
+						spawnParticles(5, other.position, dirVec, bloodSprayParticles)
+						
+						other.animState = "stun"
+						other.nextAnimUpdate = getStateVar(globalState, "time") + stunTime
+					end
+				end
+			end
+			player.animState = "kick" -- TODO KICK
+			player.nextAnimUpdate = getStateVar(globalState, "time") + 0.1
+		end
+		
 		-- friction and integration
 		player.velocity = vsub(player.velocity, vmul(player.velocity, 3.0 * simulationDt))
+		
+		-- intergration
 		player.position = vadd(player.position, vmul(player.velocity, simulationDt))
 		
 		-- collision resolution

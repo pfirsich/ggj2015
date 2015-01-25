@@ -51,6 +51,7 @@ function drawGame()
 	
 	drawEscapes()
 	drawPlayers()
+	drawParticles()
 	
 	love.graphics.pop()
 	
