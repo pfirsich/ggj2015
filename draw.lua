@@ -50,11 +50,11 @@ end
 
 function drawPaused()
 	drawGame()
-	love.graphics.setColor({150, 150, 150, 0})
+	love.graphics.setColor({20, 20, 20, 100})
 	love.graphics.rectangle("fill", 0, 0, xRes, yRes)
 	love.graphics.setColor({255,255,255,255})
 	love.graphics.setFont(mediumFont)
-	love.graphics.printf("PAUSE", 0, yRes/2, xRes, "center")
+	love.graphics.printf("PAUSE\nPress the enter key to enter the map menu", 0, yRes/2, xRes, "center")
 end
 
 function drawError()

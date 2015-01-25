@@ -148,7 +148,19 @@ function love.load()
 	
 	-- blonde, black, brown, red
 	for i, playerController in ipairs(Config.playerControllers) do
-		addPlayer(playerController)
+		--addPlayer(playerController)
+	end
+	
+	-- menu images
+	gameLogo = love.graphics.newImage("media/images/cover.png")
+	gameTitle = love.graphics.newImage("media/images/title.png")
+	menuInputs = {space = " ", enter = "return", up = "up", down = "down", escape = "escape"}
+	for name, key in pairs(menuInputs) do
+		menuInputs[name] = watchBinaryInput(keyboardCallback(key))
+	end
+	joystickAMap = {}
+	for i, joystick in ipairs(love.joystick.getJoysticks()) do
+		joystickAMap[i] = watchBinaryInput(joystickButtonCallback(joystick, "a"))
 	end
 	
 	-- sounds
@@ -157,10 +169,6 @@ function love.load()
 	registerLevel("level1.lua")
 	registerLevel("level2.lua")
 	
-	loadLevel("Plant Level") -- hack (hardgecoded)
-	
-	setupLevel()
-	
 	globalState = {
 		["gameloop"] = {update = updateGame, draw = drawGame, onEnter = nil, onExit = nil, time = 0},
 		["paused"] = {update = updatePaused, draw = drawPaused, onEnter = nil, time = 0},
@@ -168,7 +176,7 @@ function love.load()
 		["levelEnd"] = {update = nil, draw = drawLevelEnd, onEnter = nil, time = 0},
 		["menu"] = {update = updateMenu, draw = drawMenu, time = 0}
 	}
-	transitionState(globalState, "gameloop")
+	transitionState(globalState, "menu")
 end
 
 function love.quit()
