@@ -1,7 +1,14 @@
 bubbles = {}
 
-function spawnBubble(text, position, width, height, lifetime, colors)
-	local bubble = {text = text, position = position, width = width, height = height, lifetime = lifetime, colors = colors, age = -1.0}
+function spawnBubble(text, position, lifetime, colors)
+	lifetime = lifetime or math.huge
+	colors = colors or {}
+	
+	local font = smallFont
+	local proposedWidth = math.sqrt(font:getWidth(text))*10
+	local actualWidth, lineCount = font:getWrap(text, proposedWidth)
+	local actualHeight = font:getHeight()*lineCount
+	local bubble = {text = text, position = position, width = actualWidth, height = actualHeight, lifetime = lifetime, colors = colors, age = -1.0, font=font}
 	table.insert(bubbles, bubble)
 end
 
@@ -21,13 +28,13 @@ end
 function drawBubbles()
 	for i = 1, #bubbles do
 		local bubble = bubbles[i]
-		pos = transformPoint(bubble.position)
+		local pos = transformPoint(bubble.position)
 		love.graphics.setColor(0,0,0,100)
 		love.graphics.rectangle("fill", pos[1], pos[2], bubble.width, bubble.height)
 		love.graphics.setColor(0,0,0,225)	
 		love.graphics.rectangle("line", pos[1], pos[2], bubble.width, bubble.height)
 		
-		love.graphics.setFont(smallFont)
+		love.graphics.setFont(bubble.font)
 		love.graphics.setColor(255,255,255,255)
 		love.graphics.printf(bubble.text, pos[1], pos[2]+2, bubble.width, "center")
 	end

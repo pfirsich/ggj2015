@@ -12,7 +12,7 @@ function applyCameraTransforms(position, scale, parallax)
 end
 
 function drawGame()
-	drawRockets()
+	drawRockets() -- HACK
 	
 	for layer = bgLayerCount, 1, -1 do
 		love.graphics.push()
@@ -41,7 +41,7 @@ function drawGame()
 	applyCameraTransforms(camera.position, camera.scale)
 	
 	-- debug draw
-	if false then
+	if true then
 		love.graphics.setColor(255, 255, 255, 100)
 		local shapes = currentMap.shapes
 		for i = 1, #shapes do
@@ -60,7 +60,7 @@ function drawGame()
 end
 
 function drawTimer()
-	local time = getStateVar(globalState, "time")
+	local time = globalState["gameloop"]["time"]
 	local remaining = round(mapTime - time, 0)
 	
 	if remaining <= 0 then -- HACK (PRESENTATION)
@@ -97,6 +97,13 @@ end
 function drawLevelEnd()
 	love.graphics.setColor(255,255,255,255)
 	love.graphics.rectangle("fill", 0, 0, xRes, yRes)
+	local time = getStateVar(globalState, "time")
+	if time > 2 then
+		local value = math.min(255, (time-2)*50)
+		love.graphics.setColor(30,30,30,value)
+		love.graphics.setFont(hugeFont)
+		love.graphics.printf("BOOM.", 0, (yRes-hugeFont:getHeight())/2, xRes, "center")
+	end
 end
 
 function love.draw()

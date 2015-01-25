@@ -4,20 +4,22 @@ local imageAngle = -0.655
 local imageInvSlope = -math.tan(imageAngle)
 
 function setupLevel()
-	mapTime = 15.0
+	mapTime = 3000.0
 	roquetteAuspuffAnimation = makeAnimations("media/images/rocketburst.png", 160, {burst = {frames = {1,2,3}, interval = 0.1}})
 	
 	rockets = {}
 	rocketCount = 100
 	rocketImage = love.graphics.newImage("media/images/rocket.png")
 	for i = 1, rocketCount do
-		local rocket = {position = {love.math.random() * 8000 - 1000, love.math.random() * 2000 - 1000}, parallax = love.math.random() * 0.3 + 0.3}
-		rocket.speed = (4000 - rocket.position[2]) / mapTime
+		local rocket = {position = {(love.math.random() - 1/10)*mapSize[1], (love.math.random() - 1/2)*mapSize[2]*0.3}, parallax = love.math.random() * 0.3 + 0.3}
+		rocket.speed = (0.72*mapSize[2] - rocket.position[2]) / mapTime
 		table.insert(rockets, rocket)
 	end
 	
 	setupEscapeRocket(4400, 890)
-	setupMobileToilet(2294, 3836)
+--	setupMobileToilet(2294, 3836)
+	setupMobileToilet(2890, 1380)
+	setupMobileToilet(3050, 1380)
 end
 
 function setupMobileToilet(x,y)
@@ -31,7 +33,7 @@ function setupMobileToilet(x,y)
 		removePlayer(player)
 	end
 	
-	local escape = addEscape(x, y, "It's just a mobile toilet,\nbut better than nothing!", drawCallback, activateCallback)
+	local escape = addEscape(x, y, "It's just a mobile toilet,\nbut better than nothing!\nPress (X) to enter.", drawCallback, activateCallback)
 	
 	escape.relativeMessagePosition = {100, 0}
 	escape.height = 100
@@ -61,7 +63,7 @@ function setupEscapeRocket(x,y)
 		removePlayer(player)
 	end
 		
-	local escape = addEscape(x, y, "An old, rusty rocket.\n Press (A) to use.", drawCallback, activateCallback)
+	local escape = addEscape(x, y, "An old, rusty rocket.\n Press (X) to use.", drawCallback, activateCallback)
 	
 	escape.relativeMessagePosition = {100, -100}
 	escape.height = 90

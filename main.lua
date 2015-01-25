@@ -70,7 +70,7 @@ function love.load()
 	
 	smallFont = love.graphics.newFont("media/Anke.ttf", 24)
 	mediumFont = love.graphics.newFont("media/Anke.ttf", 48)
-	hugeFont = love.graphics.newFont("media/Anke.ttf", 72)
+	hugeFont = love.graphics.newFont("media/Anke.ttf", 200)
 	
 	
 	-- dirty, dirty, dirty to support my crappy old controllers
@@ -92,7 +92,10 @@ function love.load()
 	collider = HC(100, collisionStart, nil)
 	
 		-- backgrounds
-	love.graphics.setBackgroundColor(90, 100, 40)
+	--love.graphics.setBackgroundColor(90, 100, 40)
+	love.graphics.setBackgroundColor(33, 7, 0)
+	
+	
 	level = 1
 	bgLayerCount = 5
 	bgLayers = {}
@@ -110,7 +113,7 @@ function love.load()
 		end
 		bgLayers[i].parallax = parallaxes[i]
 	end
-	mapSize = {bgLayers[1].image:getWidth(), bgLayers[1].image:getHeight() * 5.0}
+	mapSize = {bgLayers[1].cropData.originalWidth, bgLayers[1].cropData.originalHeight}
 
 	-- map
 	local shapeArray = loveDoFile("media/mapgeometry_triangulated.lua")
