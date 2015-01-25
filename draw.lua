@@ -28,22 +28,24 @@ function drawGame()
 end
 
 function drawTimer()
-	local time = globalState["gameloop"]["time"]
-	local remaining = round(currentLevel.time - time, 0)
-	
-	if remaining <= 0 then  -- HACK
-		transitionState(globalState, "levelEnd")
-		finishLevel()
-	else
-		local margin = 10
-		local countdownWidth = 200
+	if currentLevel.hasTimer then
+		local time = globalState["gameloop"]["time"]
+		local remaining = round(currentLevel.time - time, 0)
 		
-		local x = (xRes-countdownWidth-margin)
-		local y = margin
-		
-		love.graphics.setFont(hugeMonospaceFont)
-		love.graphics.setColor(255, 255, 0, 255)
-		love.graphics.printf(tostring(remaining), x, y, countdownWidth, "right")
+		if remaining <= 0 then  -- HACK
+			transitionState(globalState, "levelEnd")
+			finishLevel()
+		else
+			local margin = 10
+			local countdownWidth = 200
+			
+			local x = (xRes-countdownWidth-margin)
+			local y = margin
+			
+			love.graphics.setFont(hugeMonospaceFont)
+			love.graphics.setColor(255, 255, 0, 255)
+			love.graphics.printf(tostring(remaining), x, y, countdownWidth, "right")
+		end
 	end
 end
 

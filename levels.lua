@@ -16,7 +16,8 @@ function registerLevel(filename)
 		setupCallback = nil,
 		updateCallback = nil,
 		drawBackgroundCallback = nil,
-		finishCallback = nil
+		finishCallback = nil,
+		hasTimer = true,
 	}
 	
 	extendTable(loveDoFile(filename), level)

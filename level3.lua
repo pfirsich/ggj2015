@@ -14,7 +14,8 @@ do
 		groundColor = {108, 83, 36},
 		backgroundColor = {33, 7, 0},
 		spawn = {950, 645},
-		time = mapTime,
+		time = 60,
+		hasTimer = false,
 		finishCallback = explosion
 	}	
 end
