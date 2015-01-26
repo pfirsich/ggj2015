@@ -9,7 +9,7 @@ Controls
 Controls für Keybord players are:
 up arrow to jump
 left, right arrow to move
-space to interact
+space to interact / use the escapes
 left alt to punch
 right ctrl to kick
 escape to pause/get to menu
