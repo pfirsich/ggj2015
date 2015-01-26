@@ -7,11 +7,11 @@ function love.conf(t)
 	t.window.display = 1				-- Index of the monitor to show the window in (number)
 	t.window.highdpi = false			-- Enable high-dpi mode for the window on a Retina display (true/false).
 
-	t.identity = "GGJ 2015 Game"               -- The name of the save directory (string)
+	t.identity = "Falling Nukes and Running People (GGJ 2015)" -- The name of the save directory (string)
 	t.version = "0.9.1"                -- The LÖVE version this game was made for (string)
 	t.console = false                  -- Attach a console (boolean, Windows only)
 
-	t.window.title = "GGJ 2015 Game"       -- The window title (string)
+	t.window.title = "Falling Nukes and Running People (GGJ 2015)" -- The window title (string)
 	t.window.icon = nil                -- Filepath to an image to use as the window's icon (string)
 
 	t.window.borderless = false        -- Remove all border visuals from the window (boolean)
@@ -30,10 +30,10 @@ function love.conf(t)
 	t.modules.keyboard = true          -- Enable the keyboard module (boolean)
 	t.modules.math = true              -- Enable the math module (boolean)
 	t.modules.mouse = true             -- Enable the mouse module (boolean)
-	t.modules.physics = true           -- Enable the physics module (boolean)
+	t.modules.physics = false          -- Enable the physics module (boolean)
 	t.modules.sound = true             -- Enable the sound module (boolean)
 	t.modules.system = true            -- Enable the system module (boolean)
 	t.modules.timer = true             -- Enable the timer module (boolean)
 	t.modules.window = true            -- Enable the window module (boolean)
-	t.modules.thread = true            -- Enable the thread module (boolean)
+	t.modules.thread = false           -- Enable the thread module (boolean)
 end
