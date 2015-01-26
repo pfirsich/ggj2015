@@ -91,7 +91,7 @@ function love.load()
 		["paused"] = {update = updatePaused, draw = drawPaused, onEnter = nil, time = 0},
 		["error"] = {update = nil, draw = drawError, onEnter = nil, time = 0},
 		["levelEnd"] = {update = nil, draw = drawLevelEnd, onEnter = nil, time = 0},
-		["menu"] = {update = updateMenu, draw = drawMenu, time = 0}
+		["menu"] = {update = updateMenu, draw = drawMenu, onEnter=finishLevel, time = 0}
 	}
 	
 	Config = loadConfig("config.cfg")

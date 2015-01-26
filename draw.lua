@@ -34,7 +34,6 @@ function drawTimer()
 		
 		if remaining <= 0 then  -- HACK
 			transitionState(globalState, "levelEnd")
-			finishLevel()
 		else
 			local margin = 10
 			local countdownWidth = 200

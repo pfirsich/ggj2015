@@ -26,12 +26,17 @@ function registerLevel(filename)
 end
 
 function loadLevel(name)
+	if currentLevel then
+		finishLevel()
+	end
+	
 	for i, level in ipairs(levels) do
 		if level.name == name then
 			currentLevel = level
 			return
 		end
 	end
+	
 	error("Level '" .. name .. "' has not been registered.")
 end
 
@@ -39,7 +44,7 @@ function setupLevel()
 	if currentLevel == nil then
 		error("Level has not been loaded.")
 	end
-	
+
 	escapes = {}
 	callbacks = {}
 	bubbles = {}
@@ -160,7 +165,18 @@ end
 
 
 function finishLevel()
-	if currentLevel.finishCallback then
-		currentLevel.finishCallback()
+	if currentLevel then 
+		if currentLevel.finishCallback then
+			currentLevel.finishCallback()
+		end
+		
+		for i=1,#currentLevel.layers do
+			local layer = currentLevel.layers[i]
+			layer.image = nil
+		end
+		
+		collectgarbage("collect")
+		
+		currentLevel = nil
 	end
 end
