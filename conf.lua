@@ -7,7 +7,7 @@ function love.conf(t)
 	t.window.display = 1				-- Index of the monitor to show the window in (number)
 	t.window.highdpi = false			-- Enable high-dpi mode for the window on a Retina display (true/false).
 
-	t.identity = "Falling Nukes and Running People (GGJ 2015)" -- The name of the save directory (string)
+	t.identity = "FallingNukesAndRunningPeople" -- The name of the save directory (string)
 	t.version = "0.9.1"                -- The LÖVE version this game was made for (string)
 	t.console = false                  -- Attach a console (boolean, Windows only)
 
